@@ -1,20 +1,19 @@
-Installation
+安装
 ============
 
-.. note:: These instructions apply to pyglet |version|.
+.. note:: 这些说明适用于 pyglet |version|.
 
-pyglet is a pure python library, so no special steps or complitation are
-required for installation. You can install it in a variety of ways, or simply
-copy the `pyglet` folder directly into your project. If you're unsure what to do,
-the recommended method is to install it into your local ``site-packages``
-directory. pyglet is available `on PyPI <https://pypi.python.org/pypi/pyglet>`_.
-for easy installation via **pip**:
+Pyglet 是一个纯 Python 库，因此安装时不需要特殊的步骤或编译。
+您可以通过多种方式安装它，或者只是将 `pyglet` 文件夹直接复制到您的项目中。
+如果您不确定该怎么做，建议的方法是将其安装到本地“站点包”目录中。
+pyglet 在 `on PyPI <https://pypi.python.org/pypi/pyglet>`_ 上可用。
+通过 **PIP** 轻松安装：
 
 .. code-block:: sh
 
     pip install pyglet --user
 
-You can also clone the repository using **git** and install from source:
+您还可以使用 **git** 克隆存储库并从源代码安装：
 
 .. code-block:: sh
 
@@ -24,14 +23,13 @@ You can also clone the repository using **git** and install from source:
     python setup.py install --user
 
 
-To play video, or a wide selection of compressed audio, pyglet can optionally
-use `FFmpeg <https://www.ffmpeg.org/download.html>`_.
+如果要播放视频或多种压缩音频，pyglet 可以选择使用 `FFmpeg <https://www.ffmpeg.org/download.html>`_.
 
 
-Running the examples
---------------------
+运行示例
+-------
 
-The source code archives include examples. Archives are
+源代码存档包括示例。档案是
 `available on Github <https://github.com/pyglet/pyglet/releases/>`_:
 
 .. code-block:: sh
@@ -41,7 +39,7 @@ The source code archives include examples. Archives are
     python examples/hello_world.py
 
 
-As mentioned above, you can also clone the repository using Git:
+如上所述，您还可以使用 Git 克隆存储库：
 
 .. code-block:: sh
 
