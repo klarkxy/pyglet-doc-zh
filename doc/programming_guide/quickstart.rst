@@ -1,32 +1,29 @@
 .. _quickstart:
 
-Writing a pyglet application
-============================
+编写 pyglet 应用程序
+===================
 
-Getting started with a new library or framework can be daunting, especially
-when presented with a large amount of reference material to read.
-This chapter gives a very quick introduction to pyglet without going into
-too much detail.
+开始使用新的库或框架可能会令人生畏，尤其是在提供大量参考资料需要阅读时。
+本章对pyglet进行了非常快速的介绍，而无需深入太多细节。
 
 Hello, World
 ------------
 
-We'll begin with the requisite "Hello, World" introduction. This program will
-open a window with some text in it, and wait to be closed. You can find the
-entire program in the `examples/programming_guide/hello_world.py` file.
+我们将从必要的 "Hello, World" 介绍开始。
+该程序将打开一个包含一些文本的窗口，然后等待关闭。
+您可以在 `examples/programming_guide/hello_world.py` 文件中找到整个程序。
 
-Begin by importing the :mod:`pyglet` package::
+首先导入 :mod:`pyglet` 包::
 
     import pyglet
 
-Create a :class:`pyglet.window.Window` by calling its default constructor.
-The  window will be visible as soon as it's created, and will have reasonable
-default values for all its parameters::
+通过调用其默认构造函数来创建一个 :class:`pyglet.window.Window`。
+该窗口将在创建后立即可见，并且其所有参数都具有合理的默认值::
 
     window = pyglet.window.Window()
 
-To display the text, we'll create a :class:`~pyglet.text.Label`. Keyword
-arguments are used to set the font, position and anchorage of the label::
+为了显示文本，我们将创建一个 :class:`~pyglet.text.Label` 。
+关键字参数用于设置标签的字体、位置和锚定::
 
     label = pyglet.text.Label('Hello, world',
                               font_name='Times New Roman',
@@ -34,38 +31,31 @@ arguments are used to set the font, position and anchorage of the label::
                               x=window.width//2, y=window.height//2,
                               anchor_x='center', anchor_y='center')
 
-The Window dispatches an :meth:`~pyglet.window.Window.on_draw` event whenever
-it's ready to redraw its contents. pyglet provides several ways to attach event
-handlers to objects; a simple way is to use a decorator::
+窗口在准备重绘其内容时调度一个 :meth:`~pyglet.window.Window.on_draw` 事件。
+pyglet 提供了几种将事件处理程序附加到对象的方法，一个简单的方法是使用装饰器::
 
     @window.event
     def on_draw():
         window.clear()
         label.draw()
 
-Within the above :meth:`~pyglet.window.Window.on_draw` handler, the window is
-cleared to the default background color (black), and the label is drawn.
+在上面的 :meth:`~pyglet.window.Window.on_draw` 处理程序中，窗口被清除为默认背景色（黑色），并绘制标签。
 
-Finally, call::
+最后，调用::
 
     pyglet.app.run()
 
-This will enter pyglet's default event loop, and let pyglet respond to
-application events such as the mouse and keyboard.
-Your event handlers will now be called as required, and the
-:func:`~pyglet.app.run` method will return only when all application
-windows have been closed.
+这将进入 pyglet 的默认事件循环，并让 pyglet 响应应用程序事件，例如鼠标和键盘。
+现在将根据需要调用事件处理程序，并且 :func:`~pyglet.app.run` 方法仅在所有应用程序窗口关闭后返回。
 
-If you are coming from another library, you may be used to writing your
-own event loop. This is possible to do with pyglet as well, but it is
-generally not necessary; see :ref:`programming-guide-eventloop` for details.
+如果您来自另一个库，您可能习惯于编写自己的事件循环，这也可以用pyglet来做。
+有关详细信息，请参见 :ref:`programming-guide-eventloop` 。
 
-Image viewer
-------------
+图像查看器
+---------
 
-Most games and applications will need to load and display images on the
-screen. In this example we'll load an image from the application's
-directory and display it within the window::
+大多数游戏和应用程序都需要在屏幕上加载和显示图像。
+在此示例中，我们将从应用程序的目录中加载图像并将其显示在窗口中::
 
     import pyglet
 
@@ -79,25 +69,20 @@ directory and display it within the window::
 
     pyglet.app.run()
 
-We used the :func:`~pyglet.resource.image` function of :mod:`pyglet.resource`
-to load the image, which automatically locates the file relative to the source
-file (rather than the working directory).  To load an image not bundled with
-the application (for example, specified on the command line), you would use
-:func:`pyglet.image.load`.
+我们使用 :mod:`pyglet.resource` 的 :func:`~pyglet.resource.image` 函数来加载图像。
+它会自动相对于源文件（而不是工作目录）定位文件。 
+要加载未与应用程序捆绑在一起的图像（例如，在命令行上指定），请使用 :func:`pyglet.image.load` 。
 
-The :meth:`~pyglet.image.AbstractImage.blit` method draws the image.  The
-arguments ``(0, 0)`` tell pyglet to draw the image at pixel coordinates 0,
-0 in the window (the lower-left corner).
+:meth:`~pyglet.image.AbstractImage.blit` 方法绘制图像。 参数 ``(0, 0)`` 告诉 pyglet 在窗口（左下角）的像素坐标 (0, 0) 处绘制图像。
 
-The complete code for this example is located in
+此示例的完整代码位于
 `examples/programming_guide/image_viewer.py`.
 
-Handling mouse and keyboard events
+处理鼠标和键盘事件
 ----------------------------------
 
-So far the only event used is the :meth:`~pyglet.window.Window.on_draw`
-event.  To react to keyboard and mouse events, it's necessary to write and
-attach event handlers for these events as well::
+到目前为止，唯一使用的事件是 :meth:`~pyglet.window.Window.on_draw` 事件。 
+若要对键盘和鼠标事件做出反应，还需要为这些事件编写和附加事件处理程序::
 
     import pyglet
 
@@ -113,11 +98,9 @@ attach event handlers for these events as well::
 
     pyglet.app.run()
 
-Keyboard events have two parameters: the virtual key `symbol` that was
-pressed, and a bitwise combination of any `modifiers` that are present (for
-example, the ``CTRL`` and ``SHIFT`` keys).
+键盘事件有两个参数：按下的虚拟键 `symbol` ，以及存在的任何 `modifiers` 的按位组合（例如， ``CTRL`` 和 ``SHIFT`` 键）。
 
-The key symbols are defined in :mod:`pyglet.window.key`::
+关键符号定义在 :mod:`pyglet.window.key`::
 
     from pyglet.window import key
 
@@ -130,10 +113,9 @@ The key symbols are defined in :mod:`pyglet.window.key`::
         elif symbol == key.ENTER:
             print('The enter key was pressed.')
 
-See the :mod:`pyglet.window.key` documentation for a complete list
-of key symbols.
+请参阅 :mod:`pyglet.window.key` 文档，获取关键符号的完整列表。
 
-Mouse events are handled in a similar way::
+鼠标事件的处理方式类似::
 
     from pyglet.window import mouse
 
@@ -142,27 +124,24 @@ Mouse events are handled in a similar way::
         if button == mouse.LEFT:
             print('The left mouse button was pressed.')
 
-The ``x`` and ``y`` parameters give the position of the mouse when the button
-was pressed, relative to the lower-left corner of the window.
+``x`` 和 ``y`` 参数给出按钮被按下时鼠标相对于窗口左下角的位置。
 
-There are more than 20 event types that you can handle on a window. An easy
-way to find the event names and parameters you need is to add the following
-lines to your program::
+您可以在一个窗口上处理 20 多种事件类型。
+查找所需事件名称和参数的一种简单方法是将以下行添加到程序中::
 
     event_logger = pyglet.window.event.WindowEventLogger()
     window.push_handlers(event_logger)
 
-This will cause all events received on the window to be printed to the
-console.
+这将导致窗口上收到的所有事件都打印到控制台。
 
-An example program using keyboard and mouse events is in
+使用键盘和鼠标事件的示例程序位于
 `examples/programming_guide/events.py`
 
-Playing sounds and music
-------------------------
+播放声音和音乐
+-------------
 
-pyglet makes it easy to play and mix multiple sounds together.
-The following example plays an MP3 file [#mp3]_::
+Pyglet 可以轻松播放和混合多种声音。
+以下示例播放 MP3 文件 [#mp3]_::
 
     import pyglet
 
@@ -171,52 +150,39 @@ The following example plays an MP3 file [#mp3]_::
 
     pyglet.app.run()
 
-As with the image loading example presented earlier,
-:func:`~pyglet.resource.media` locates the sound file in the application's
-directory (not the working directory).  If you know the actual filesystem path
-(either relative or absolute), use :func:`pyglet.media.load`.
+与前面介绍的图像加载示例一样， :func:`~pyglet.resource.media` 将声音文件定位在应用程序的目录（而不是工作目录）中。 
+如果您知道实际的文件系统路径（相对路径或绝对路径），请使用 :func:`pyglet.media.load` 。
 
-By default, audio is streamed when playing. This works well for longer music
-tracks. Short sounds, such as a gunfire shot used in a game, should instead be
-fully decoded in memory before they are used. This allows them to play more
-immediately and incur less of a CPU performance penalty. It also allows playing
-the same sound repeatedly without reloading it.
-Specify ``streaming=False`` in this case::
+默认情况下，播放时会流式传输音频。这适用于较长的音乐曲目。
+短声音（例如游戏中使用的枪声）应在使用之前在内存中完全解码。
+这使他们能够更立即地播放，并减少 CPU 性能损失。
+它还允许重复播放相同的声音而无需重新加载。
+在这种情况下指定 ``streaming=False`` ::
 
     sound = pyglet.resource.media('shot.wav', streaming=False)
     sound.play()
 
-The `examples/media_player.py` example demonstrates playback of streaming
-audio and video using pyglet.  The `examples/noisy/noisy.py` example
-demonstrates playing many short audio samples simultaneously, as in a game.
+`examples/media_player.py`  示例演示了使用 pyglet 播放流音频和视频。  
+`examples/noisy/noisy.py` 示例演示了同时播放许多简短的音频样本，就像在游戏中一样。
 
-.. [#mp3] MP3 and other compressed audio formats require FFmpeg to be installed.
-          Uncompressed WAV files can be played without FFmpeg.
+.. [#mp3] MP3 和其他压缩音频格式需要安装 FFmpeg。未压缩的 WAV 文件可以在没有 FFmpeg 的情况下播放。
 
-Where to next?
---------------
+下一步去哪里？
+------------
 
-The examples above have shown you how to display something on the screen,
-and perform a few basic tasks.  You're probably left with a lot of questions
-about these examples, but don't worry. The remainder of this programming guide
-goes into greater technical detail on many of pyglet's features.  If you're
-an experienced developer, you can probably dive right into the sections that
-interest you.
+上面的示例向您展示了如何在屏幕上显示某些内容，以及如何执行一些基本任务。 
+您可能会对这些示例有很多疑问，但不要担心。本编程指南的其余部分将详细介绍 pyglet 的许多功能。 
+如果您是一位经验丰富的开发人员，则可以直接进入您感兴趣的部分。
 
-For new users, it might be daunting to read through everything all at once.
-If you feel overwhelmed, we recommend browsing through the beginnings of each
-chapter, and then having a look at a more in-depth example project.
-You can find an example of a 2D game in the :ref:`programming-guide-game`
-section.
+对于新用户来说，一次通读所有内容可能会令人生畏。
+如果您感到不知所措，我们建议您浏览每章的开头，然后查看更深入的示例项目。
+您可以在 :ref:`programming-guide-game` 部分找到2D游戏的示例。
 
-To write advanced 3D applications or achieve optimal performance in your 2D
-applications, you can also work with OpenGL directly.  If you only want to
-work with OpenGL primitives, but want something slightly higher-level, have a
-look at the :ref:`guide_graphics` module.
+要编写高级 3D 应用程序或在 2D 应用程序中实现最佳性能，您还可以直接使用 OpenGL。 
+如果你只想使用 OpenGL 原语，但想要一些稍微高级的东西，请查看 :ref:`guide_graphics` 模块。
 
-There are numerous examples of pyglet applications in the ``examples/``
-directory of the documentation and source distributions.  If you get
-stuck, or have any questions, join us on the `mailing list`_ or `Discord`_!
+在文档和源代码发行版的 ``examples/`` 目录中有许多pyglet应用程序的例子。 
+如果您遇到困难或有任何疑问，请加入我们的 `mailing list`_ 或 `Discord`_ ！
 
 .. _mailing list: http://groups.google.com/group/pyglet-users
 .. _Discord: https://discord.gg/QXyegWe

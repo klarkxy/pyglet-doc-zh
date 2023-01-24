@@ -47,8 +47,8 @@ Pyglet 通过以下方式简化了选择系统配置之一的过程允许您创�
 
 .. _guide_displays:
 
-显示
-^^^^
+Display
+^^^^^^^
 
 系统实际上可能支持几组不同的配置，具体取决于正在使用哪个显示设备。 
 例如，具有两个视频的计算机卡可能不支持每个卡上的相同配置。 
@@ -59,24 +59,22 @@ Pyglet 通过以下方式简化了选择系统配置之一的过程允许您创�
 在 Linux 上，显示设备对应于到正在使用的 X11 显示器。 在Windows和Mac OS X上，只有一个
 显示 (由于这些操作系统将多个视频卡显示为单个虚拟设备).
 
-The :mod:`pyglet.canvas` module provides access to the display(s). Use the
-:func:`~pyglet.canvas.get_display` function to get the default display::
+:mod:`pyglet.canvas` 模块提供对显示器的访问。使用
+:func:`~pyglet.canvas.get_display` 获取默认显示的函数::
 
     >>> display = pyglet.canvas.get_display()
 
 .. note::
 
-    On X11, you can use the :class:`~pyglet.canvas.Display` class directly to
-    specify the display string to use, for example to use a remotely connected
-    display.  The name string is in the same format as used by the ``DISPLAY``
-    environment variable::
+    在 X11 上，您可以使用 :class:`~pyglet.canvas.Display` 类直接到
+    指定要使用的显示字符串，例如使用远程连接的显示。 
+    名称字符串的格式与 ``DISPLAY``环境变量::
 
         >>> display = pyglet.canvas.Display(name=':1')
 
-    If you have multiple physical screens and you're using Xinerama, see
-    :ref:`guide_screens` to select the desired screen as you would for Windows
-    and Mac OS X. Otherwise, you can specify the screen number via the
-    ``x_screen`` argument::
+    如果您有多个物理屏幕并且正在使用 Xinerama，请参阅
+    :ref:`guide_screens` 以选择所需的屏幕，就像在 Windows 中一样
+    和 Mac OS X。否则，您可以通过 ``x_screen`` 参数::
 
         >>> display = pyglet.canvas.Display(name=':1', x_screen=1)
 
@@ -85,13 +83,11 @@ The :mod:`pyglet.canvas` module provides access to the display(s). Use the
 Screens
 ^^^^^^^
 
-Once you have obtained a display, you can enumerate the screens that are
-connected.  A screen is the physical display medium connected to the display
-device; for example a computer monitor, TV or projector.  Most computers will
-have a single screen, however dual-head workstations and laptops connected to
-a projector are common cases where more than one screen will be present.
+获得显示后，可以枚举连接的屏幕。 
+屏幕是连接到显示设备的物理显示介质，例如计算机显示器、电视或投影仪。 
+大多数计算机将具有单个屏幕，但是双头工作站和连接到投影仪的笔记本电脑是存在多个屏幕的常见情况。
 
-In the following example the screens of a dual-head workstation are listed::
+在以下示例中，列出了双头工作站的屏幕::
 
     >>> for screen in display.get_screens():
     ...     print(screen)
@@ -99,147 +95,107 @@ In the following example the screens of a dual-head workstation are listed::
     XlibScreen(screen=0, x=1280, y=0, width=1280, height=1024, xinerama=1)
     XlibScreen(screen=0, x=0, y=0, width=1280, height=1024, xinerama=1)
 
-Because this workstation is running Linux, the returned screens are
-``XlibScreen``, a subclass of :class:`~pyglet.canvas.Screen`. The
-``screen`` and ``xinerama`` attributes are specific to Linux, but the
+由于此工作站运行的是 Linux，因此返回的屏幕是``XlibScreen``，
+一个 :class:`~pyglet.canvas.Screen` 的子类。 
+``screen`` 和 ``xinerama`` 属性特定于 Linux，但
 :attr:`~pyglet.canvas.Screen.x`, :attr:`~pyglet.canvas.Screen.y`,
-:attr:`~pyglet.canvas.Screen.width` and
-:attr:`~pyglet.canvas.Screen.height` attributes are present on all screens,
-and describe the screen's geometry, as shown below.
+:attr:`~pyglet.canvas.Screen.width` 和
+:attr:`~pyglet.canvas.Screen.height` 属性存在于所有屏幕上，并描述屏幕的几何形状，如下所示。
 
 .. figure:: img/screens.png
 
-    Example arrangement of screens and their reported geometry.  Note that the
-    primary display (marked "1") is positioned on the right, according to this
-    particular user's preference.
+    屏幕及其报告的几何形状的排列示例。 请注意，主显示器（标记为“1”）根据此特定用户的偏好位于右侧。
 
-There is always a "default" screen, which is the first screen returned by
-:meth:`~pyglet.canvas.Display.get_screens`.  Depending on the operating system,
-the default screen is usually the one that contains the taskbar (on Windows) or
-menu bar (on OS X).
-You can access this screen directly using
-:meth:`~pyglet.canvas.Display.get_default_screen`.
+始终有一个“默认”屏幕，这是返回的第一个屏幕 :meth:`~pyglet.canvas.Display.get_screens`.  
+根据操作系统的不同，默认屏幕通常是包含任务栏（在Windows上）或菜单栏（在OS X上）的屏幕。
+您可以使用以下方法直接访问此屏幕 :meth:`~pyglet.canvas.Display.get_default_screen`.
 
 
 .. _guide_glconfig:
 
-OpenGL configuration options
+OpenGL 配置选项
 ----------------------------
 
-When configuring or selecting a :class:`~pyglet.gl.Config`, you do so based
-on the properties of that config.  pyglet supports a fixed subset of the
-options provided by AGL, GLX, WGL and their extensions.  In particular, these
-constraints are placed on all OpenGL configs:
+当配置或选择一个 :class:`~pyglet.gl.Config` 时, 您可以根据该配置的属性执行此操作。 
+PYGLET 支持 AGL、GLX、WGL 及其扩展提供的固定选项子集。 特别是，这些约束被放置在所有OpenGL配置上:
 
-* Buffers are always component (RGB or RGBA) color, never palette indexed.
-* The "level" of a buffer is always 0 (this parameter is largely unsupported
-  by modern OpenGL drivers anyway).
-* There is no way to set the transparent color of a buffer (again, this
-  GLX-specific option is not well supported).
-* There is no support for pbuffers (equivalent functionality can be achieved
-  much more simply and efficiently using framebuffer objects).
+* 缓冲区始终是组件（RGB 或 RGBA）颜色，从不为调色板编制索引。
+* 缓冲区的“级别”始终为 0（无论如何，现代 OpenGL 驱动程序在很大程度上不支持此参数）。
+* 无法设置缓冲区的透明颜色（同样，此特定于 GLX 的选项没有得到很好的支持）。
+* 不支持 pbuffers（使用帧缓冲区对象可以更简单、更高效地实现等效功能）。
 
-The visible portion of the buffer, sometimes called the color buffer, is
-configured with the following attributes:
+缓冲区的可见部分（有时称为颜色缓冲区）配置了以下属性:
 
     ``buffer_size``
-        Number of bits per sample.  Common values are 24 and 32, which each
-        dedicate 8 bits per color component.  A buffer size of 16 is also
-        possible, which usually corresponds to 5, 6, and 5 bits of red, green
-        and blue, respectively.
+        每个样本的位数。 常用值为 24 和 32，每个颜色分量专用 8 位。 
+        缓冲区大小也可以为 16，通常分别对应于 5、6 和 5 位红色、绿色和蓝色。
 
-        Usually there is no need to set this property, as the device driver
-        will select a buffer size compatible with the current display mode
-        by default.
+        通常不需要设置此属性，因为默认情况下，设备驱动程序将选择与当前显示模式兼容的缓冲区大小。
+
     ``red_size``, ``blue_size``, ``green_size``, ``alpha_size``
-        These each give the number of bits dedicated to their respective color
-        component.  You should avoid setting any of the red, green or blue
-        sizes, as these are determined by the driver based on the
-        ``buffer_size`` property.
+        这些都给出了专用于其各自颜色分量的位数。 
+        应避免设置任何红色、绿色或蓝色大小，因为这些大小由驱动程序根据 ``buffer_size`` 属性确定。
 
-        If you require an alpha channel in your color buffer (for example, if
-        you are compositing in multiple passes) you should specify
-        ``alpha_size=8`` to ensure that this channel is created.
-    ``sample_buffers`` and ``samples``
-        Configures the buffer for multisampling (MSAA), in which more than
-        one color sample is used to determine the color of each pixel,
-        leading to a higher quality, antialiased image.
+        如果在颜色缓冲区中需要 Alpha 通道（例如，如果要在多个通道中合成），则应指定 ``alpha_size=8`` 以确保创建此通道。
 
-        Enable multisampling (MSAA) by setting ``sample_buffers=1``, then
-        give the number of samples per pixel to use in ``samples``.
-        For example, ``samples=2`` is the fastest, lowest-quality multisample
-        configuration. ``samples=4`` is still widely supported
-        and fairly performant even on Intel HD and AMD Vega.
-        Most modern GPUs support 2×, 4×, 8×, and 16× MSAA samples
-        with fairly high performance.
+    ``sample_buffers`` 和 ``samples``
+        为多重采样 （MSAA） 配置缓冲区，其中使用多个颜色样本来确定每个像素的颜色，从而获得更高质量的抗锯齿图像。
+
+        通过设置 ``sample_buffers=1`` 启用多重采样 （MSAA），然后给出要在 ``samples`` 中使用的每个像素的样本数。
+        例如， ``samples=2`` 是速度最快、质量最低的多重采样配置。
+        ``samples=4`` 仍然得到广泛支持，即使在Intel HD和AMD Vega上也相当高性能。
+        大多数现代 GPU 支持 2x、4x、8x 和 16x MSAA 样本，性能相当高。
 
     ``stereo``
-        Creates separate left and right buffers, for use with stereo hardware.
-        Only specialised video hardware such as stereoscopic glasses will
-        support this option.  When used, you will need to manually render to
-        each buffer, for example using `glDrawBuffers`.
+        创建单独的左右缓冲区，用于立体声硬件。只有专用视频硬件（如立体眼镜）才会支持此选项。 
+        使用时，您需要手动渲染到每个缓冲区， `glDrawBuffers`。
+
     ``double_buffer``
-        Create separate front and back buffers.  Without double-buffering,
-        drawing commands are immediately visible on the screen, and the user
-        will notice a visible flicker as the image is redrawn in front of
-        them.
+        创建单独的前端和后端缓冲区。 
+        如果没有双缓冲，绘图命令会立即在屏幕上可见，并且当图像在他们面前重新绘制时，用户会注意到可见的闪烁。
 
-        It is recommended to set ``double_buffer=True``, which creates a
-        separate hidden buffer to which drawing is performed.  When the
-        `Window.flip` is called, the buffers are swapped,
-        making the new drawing visible virtually instantaneously.
+        建议设置 ``double_buffer=True`` ，这将创建一个单独的隐藏缓冲区，用于执行绘图。 
+        调用 `Window.flip` 时，缓冲区将被交换，使新绘图几乎立即可见。
 
-In addition to the color buffer, several other buffers can optionally be
-created based on the values of these properties:
+除了颜色缓冲区之外，还可以根据这些属性的值选择性地创建其他几个缓冲区：
 
     ``depth_size``
-        A depth buffer is usually required for 3D rendering.  The typical
-        depth size is 24 bits.  Specify ``0`` if you do not require a depth
-        buffer.
+        3D 渲染通常需要深度缓冲区。 典型的深度大小为 24 位。 如果不需要深度缓冲区，请指定 ``0`` 。
+
     ``stencil_size``
-        The stencil buffer is required for masking the other buffers and
-        implementing certain volumetric shadowing algorithms.  The typical
-        stencil size is 8 bits; or specify ``0`` if you do not require it.
+        模板缓冲区是屏蔽其他缓冲区和实现某些体积阴影算法所必需的。 典型的模板大小为 8 位;或者，如果不需要，请指定 ``0``。
+
     ``accum_red_size``, ``accum_blue_size``, ``accum_green_size``, ``accum_alpha_size``
-        The accumulation buffer can be used for simple antialiasing,
-        depth-of-field, motion blur and other compositing operations.  Its use
-        nowadays is being superceded by the use of floating-point textures,
-        however it is still a practical solution for implementing these
-        effects on older hardware.
+        累积缓冲区可用于简单的抗锯齿、景深、运动模糊和其他合成操作。 
+        如今，它的使用正在被浮点纹理的使用所取代，但它仍然是在旧硬件上实现这些效果的实用解决方案。
 
-        If you require an accumulation buffer, specify ``8`` for each
-        of these attributes (the alpha component is optional, of course).
+        如果需要累积缓冲区，请为每个属性指定 ``8`` （当然，alpha 组件是可选的）。
+        
     ``aux_buffers``
-        Each auxiliary buffer is configured the same as the colour buffer.
-        Up to four auxiliary buffers can typically be created.  Specify ``0``
-        if you do not require any auxiliary buffers.
+        每个辅助缓冲区的配置与颜色缓冲区相同。       
+        通常最多可以创建四个辅助缓冲区。 
+        如果不需要任何辅助缓冲区，请指定 ``0`` 。
 
-        Like the accumulation buffer, auxiliary buffers are used less often
-        nowadays as more efficient techniques such as render-to-texture are
-        available.  They are almost universally available on older hardware,
-        though, where the newer techniques are not possible.
+        与累积缓冲区一样，辅助缓冲区现在很少使用，因为可以使用更有效的技术，例如渲染到纹理。 
+        但是，它们几乎在较旧的硬件上普遍可用，而较新的技术是不可能的。
 
-If you wish to work with OpenGL directly, you can request a higher level
-context. This is required if you wish to work with the modern OpenGL
-programmable pipeline. Please note, however, that pyglet currently uses
-legacy OpenGL functionality for many of its internal modules (such as
-the text, graphics, and sprite modules). Requesting a higher version
-context will currently prevent usage of these modules.
+如果您希望直接使用 OpenGL，您可以请求更高级别的上下文。
+如果您希望使用现代 OpenGL 可编程管道，这是必需的。
+但请注意，pyglet 目前在其许多内部模块（例如文本、图形和精灵模块）中使用了传统的 OpenGL 功能。
+请求更高版本的上下文当前将阻止使用这些模块。
 
     ``major_version``
-        This will be either 3 or 4, for an OpenGL 3.x or 4.x context.
+        对于 OpenGL 3.x 或 4.x 上下文，这将是 3 或 4。
+
     ``minor_version``
-        The requested minor version of the context. In some cases, the OpenGL
-        driver may return a higher version than requested.
+        请求的上下文次要版本。在某些情况下，OpenGL 驱动程序可能会返回比请求更高的版本。
+
     ``forward_compatible``
-        Setting this to `True` will ask the driver to exclude legacy OpenGL
-        features from the context. Khronos does not recommend this option.
+        将其设置为 `True` 将要求驱动程序从上下文中排除旧版 OpenGL 功能。Khronos 不建议使用此选项。
 
 .. note::
-   To request a higher higher version OpenGL context on Mac OSX, it is necessary
-   to disable the pyglet shadow context. To do this, set the pyglet option
-   ``pyglet.options['shadow_window']`` to ``False`` `before` creating a Window,
-   or importing ``pyglet.window``.
+    要在 Mac OSX 上请求更高版本的 OpenGL 上下文，必须禁用 pyglet 阴影上下文。
+    为此，请将 pyglet 选项 ``pyglet.options['shadow_window']`` 设置为  ``False`` ，在创建窗口之前，或导入 ``pyglet.window`` 。
 
 The default configuration
 ^^^^^^^^^^^^^^^^^^^^^^^^^
