@@ -1,40 +1,27 @@
 .. _guide_working-with-the-keyboard:
 
-Working with the keyboard
-=========================
+使用键盘
+=======
 
-pyglet has support for low-level keyboard input suitable for games as well as
-locale- and device-independent Unicode text entry.
+pyglet 支持适用于游戏的低级键盘输入以及独立于区域设置和设备的 Unicode 文本输入。
 
-Keyboard input requires a window which has focus.  The operating system
-usually decides which application window has keyboard focus.  Typically this
-window appears above all others and may be decorated differently, though this
-is platform-specific (for example, some Linux window managers couple
-keyboard focus with the mouse pointer).
+键盘输入需要一个具有焦点的窗口。 操作系统通常决定哪个应用程序窗口具有键盘焦点。 
+通常，此窗口显示在所有其他窗口之上，并且可能以不同的方式装饰，尽管这是特定于平台的（例如，某些 Linux 窗口管理器将键盘焦点与鼠标指针耦合）。
 
-You can request keyboard focus for a window with the
-:py:meth:`~pyglet.window.Window.activate` method, but you should not rely
-on this -- it may simply provide a visual cue to the user indicating that
-the window requires user input, without actually getting focus.
+您可以使用 :py:meth:`~pyglet.window.Window.activate` 方法为窗口请求键盘焦点，但您不应该依赖它——它可能只是为用户提供一个视觉提示，指示窗口需要用户输入，而没有实际获得焦点。
 
-Windows created with the
-:py:attr:`~pyglet.window.Window.WINDOW_STYLE_BORDERLESS` or
-:py:attr:`~pyglet.window.Window.WINDOW_STYLE_TOOL`
-style cannot receive keyboard focus.
 
-It is not possible to use pyglet's keyboard or text events without a window;
-consider using Python built-in functions such as ``input`` instead.
+使用 :py:attr:`~pyglet.window.Window.WINDOW_STYLE_BORDERLESS` 或 :py:attr:`~pyglet.window.Window.WINDOW_STYLE_TOOL` 样式创建的 Windows 无法接收键盘焦点。
 
-Keyboard events
----------------
+如果没有窗口，则无法使用 pyglet 的键盘或文本事件，考虑改用 Python 内置函数，例如 ``input`` 。
 
-The :py:meth:`~pyglet.window.Window.on_key_press` and
-:py:meth:`~pyglet.window.Window.on_key_release` events are fired when
-any key on the keyboard is pressed or released, respectively.  These events
-are not affected by "key repeat" -- once a key is pressed there are no more
-events for that key until it is released.
+键盘事件
+-------
 
-Both events are parameterised by the same arguments::
+:py:meth:`~pyglet.window.Window.on_key_press` 和 :py:meth:`~pyglet.window.Window.on_key_release` 事件分别在按下或松开键盘上的任何键时触发。 
+这些事件不受“按键重复”的影响 - 一旦按下一个键，该键在释放之前不会再有事件。
+
+两个事件都由相同的参数参数化::
 
     def on_key_press(symbol, modifiers):
         pass
@@ -42,31 +29,28 @@ Both events are parameterised by the same arguments::
     def on_key_release(symbol, modifiers):
         pass
 
-Defined key symbols
-^^^^^^^^^^^^^^^^^^^
+定义的虚拟符号
+^^^^^^^^^^^^^
 
-The `symbol` argument is an integer that represents a "virtual" key code.
-It does *not* correspond to any particular numbering scheme; in particular
-the symbol is *not* an ASCII character code.
+`symbol` 参数是一个整数，表示“虚拟”键代码。
+它*不*对应于任何特定的编号方案，特别是该符号*不是*ASCII字符代码。
 
-pyglet has key symbols that are hardware and platform independent
-for many types of keyboard.  These are defined in
-:py:mod:`pyglet.window.key` as constants.  For example, the Latin-1
-alphabet is simply the letter itself::
+Pyglet 具有独立于硬件和平台的键符号，适用于多种类型的键盘。 
+这些在 :py:mod:`pyglet.window.key` 中定义为常量。 例如，拉丁语-1字母表只是字母本身::
 
     key.A
     key.B
     key.C
     ...
 
-The numeric keys have an underscore to make them valid identifiers::
+数字键具有下划线，以使其成为有效的标识符::
 
     key._1
     key._2
     key._3
     ...
 
-Various control and directional keys are identified by name::
+通过名称标识各种控制和方向键::
 
     key.ENTER or key.RETURN
     key.SPACE
@@ -89,7 +73,7 @@ Various control and directional keys are identified by name::
     key.F2
     ...
 
-Keys on the number pad have separate symbols::
+数字键盘上的键具有单独的符号::
 
     key.NUM_1
     key.NUM_2
@@ -102,8 +86,7 @@ Keys on the number pad have separate symbols::
     key.NUM_DECIMAL
     key.NUM_ENTER
 
-Some modifier keys have separate symbols for their left and right sides
-(however they cannot all be distinguished on all platforms, including Mac OSX)::
+某些修饰键的左侧和右侧都有单独的符号（但是它们不能在所有平台上区分，包括Mac OSX）::
 
     key.LCTRL
     key.RCTRL
@@ -111,64 +94,47 @@ Some modifier keys have separate symbols for their left and right sides
     key.RSHIFT
     ...
 
-Key symbols are independent of any modifiers being active.  For example,
-lower-case and upper-case letters both generate the `A` symbol.  This is also
-true of the number keypad.
+关键符号与任何处于活动状态的修饰符无关。 例如，小写和大写字母都会生成“A”符号。 数字键盘也是如此。
 
-Modifiers
+修饰符
 ^^^^^^^^^
 
-The modifiers that are active when the event is generated are combined in a
-bitwise fashion and provided in the ``modifiers`` parameter.  The modifier
-constants defined in :py:mod:`pyglet.window.key` are::
+生成事件时处于活动状态的修饰符以按位方式组合，并在 ``modifiers`` 参数中提供。 在 :py:mod:`pyglet.window.key` 中定义的修饰符常量是::
 
     MOD_SHIFT
     MOD_CTRL
-    MOD_ALT         Not available on Mac OS X
-    MOD_WINDOWS     Available on Windows only
-    MOD_COMMAND     Available on Mac OS X only
-    MOD_OPTION      Available on Mac OS X only
+    MOD_ALT         在 Mac OS X 上不可用
+    MOD_WINDOWS     仅在 Windows 上可用
+    MOD_COMMAND     仅在 Mac OS X 上可用
+    MOD_OPTION      仅在 Mac OS X 上可用
     MOD_CAPSLOCK
     MOD_NUMLOCK
     MOD_SCROLLLOCK
-    MOD_ACCEL       Equivalent to MOD_CTRL, or MOD_COMMAND on Mac OS X.
+    MOD_ACCEL       相当于 Mac OS X 上的 MOD_CTRL 或MOD_COMMAND。
 
-For example, to test if the shift key is held down::
+例如，测试是否按住 shift 键::
 
     if modifiers & MOD_SHIFT:
         pass
 
-Unlike the corresponding key symbols, it is not possible to determine whether
-the left or right modifier is held down (though you could emulate this
-behaviour by keeping track of the key states yourself).
+与相应的按键不同，无法确定是按住左修饰符还是右修饰符（尽管您可以通过自己跟踪键状态来模拟此行为）。
 
-User-defined key symbols
-^^^^^^^^^^^^^^^^^^^^^^^^
+用户定义按键
+^^^^^^^^^^^^^^^
 
-pyglet does not define key symbols for every keyboard ever made.  For example,
-non-Latin languages will have many keys not recognised by pyglet (however,
-their Unicode representations will still be valid, see
-:ref:`guide_text-and-motion-events`).
-Even English keyboards often have additional so-called "OEM" keys
-added by the manufacturer, which might be labelled "Media", "Volume" or
-"Shopping", for example.
+Pyglet 并没有为每个键盘定义键符号。 
+例如，非拉丁语言将有许多 pyglet 无法识别的键（但是，它们的 Unicode 表示仍然有效，请参阅 :ref:`guide_text-and-motion-events` ）。
+即使是英文键盘也经常有制造商添加的额外所谓“OEM”键，例如，这些键可能被标记为“媒体”、“音量”或“购物”。
 
-In these cases pyglet will create a key symbol at runtime based on the
-hardware scancode of the key.  This is guaranteed to be unique for that model
-of keyboard, but may not be consistent across other keyboards with the same
-labelled key.
+在这些情况下，pyglet 将根据密钥的硬件扫描码在运行时创建一个密钥符号。 这保证对于该型号的键盘是唯一的，但在具有相同标记键的其他键盘之间可能不一致。
 
-The best way to use these keys is to record what the user presses after a
-prompt, and then check for that same key symbol.  Many commercial games have
-similar functionality in allowing players to set up their own key bindings.
+使用这些键的最佳方法是记录用户在提示后按下的内容，然后检查相同的键符号。 许多商业游戏在允许玩家设置自己的键绑定方面具有类似的功能。
 
-Remembering key state
-^^^^^^^^^^^^^^^^^^^^^
+记住按键状态
+^^^^^^^^^^^
 
-pyglet provides the convenience class
-:py:class:`~pyglet.window.key.KeyStateHandler` for storing the
-current keyboard state.  This can be pushed onto the event handler stack of
-any window and subsequently queried as a dict::
+pyglet 提供了方便类 :py:class:`~pyglet.window.key.KeyStateHandler` 来存储当前的键盘状态。 
+这可以推送到任何窗口的事件处理程序堆栈上，然后作为字典进行查询::
 
     from pyglet.window import key
 
@@ -182,74 +148,47 @@ any window and subsequently queried as a dict::
 
 .. _guide_text-and-motion-events:
 
-Text and motion events
-----------------------
+文本和运动事件
+-------------
 
-pyglet decouples the keys that the user presses from the Unicode text that is
-input.  There are several benefits to this:
+pyglet 将用户按下的键与输入的 Unicode 文本分离。 这样做有几个好处：
 
-* The complex task of mapping modifiers and key symbols to Unicode characters
-  is taken care of automatically and correctly.
-* Key repeat is applied to keys held down according to the user's operating
-  system preferences.
-* Dead keys and compose keys are automatically interpreted to produce
-  diacritic marks or combining characters.
-* Keyboard input can be routed via an input palette, for example to input
-  characters from Asian languages.
-* Text input can come from other user-defined sources, such as handwriting or
-  voice recognition.
+* 将修饰符和键符号映射到 Unicode 字符的复杂任务会自动正确处理。
+* 按键重复将应用于根据用户的操作系统首选项按住的按键。
+* 死键和撰写键会自动解释以生成变音符号或组合字符。
+* 键盘输入可以通过输入调色板路由，例如输入来自亚洲语言的字符。
+* 文本输入可以来自其他用户定义的源，例如手写或语音识别。
 
-The actual source of input (i.e., which keys were pressed, or what input
-method was used) should be considered outside of the scope of the application
--- the operating system provides the necessary services.
+实际的输入源（即，按下了哪些键，或者使用了什么输入法）应该在应用程序范围之外考虑——操作系统提供必要的服务。
 
-When text is entered into a window, the
-:py:meth:`~pyglet.window.Window.on_text` event is fired::
+将文本输入到窗口中时，将触发 :py:meth:`~pyglet.window.Window.on_text` 事件::
 
     def on_text(text):
         pass
 
-The only parameter provided is a Unicode string.
-For keyboard input this will usually be one character long,
-however more complex input methods such as an input palette may
-provide an entire word or phrase at once.
+提供的唯一参数是 Unicode 字符串。
+对于键盘输入，这通常是一个字符长，但是更复杂的输入法（如输入调色板）可能会一次提供整个单词或短语。
 
-You should always use the :py:meth:`~pyglet.window.Window.on_text`
-event when you need to determine a string from a sequence of keystrokes.
-Conversely, you never use :py:meth:`~pyglet.window.Window.on_text` when you
-require keys to be pressed (for example, to control the movement of the player
-in a game).
+当您需要从一系列击键中确定字符串时，应始终使用 :py:meth:`~pyglet.window.Window.on_text` 事件。
+相反，当您需要按下按键（例如，控制游戏中玩家的移动）时，切勿使用 :py:meth:`~pyglet.window.Window.on_text`。
 
-Motion events
-^^^^^^^^^^^^^
+运动事件
+^^^^^^^
 
-In addition to entering text, users press keys on the keyboard to navigate
-around text widgets according to well-ingrained conventions.  For example,
-pressing the left arrow key moves the cursor one character to the left.
+除了输入文本外，用户还可以按键盘上的键，根据根深蒂固的约定在文本小部件中导航。 例如，按向左箭头键可将光标向左移动一个字符。
 
-While you might be tempted to use the
-:py:meth:`~pyglet.window.Window.on_key_press` event to capture these
-events, there are a couple of problems:
+虽然您可能想使用 :py:meth:`~pyglet.window.Window.on_key_press` 事件来捕获这些事件，但存在一些问题：
 
-* Key repeat events are not generated for
-  :py:meth:`~pyglet.window.Window.on_key_press`, yet users expect
-  that holding down the left arrow key will eventually move the character to
-  the beginning of the line.
-* Different operating systems have different conventions for the behaviour of
-  keys.  For example, on Windows it is customary for the Home key to move the
-  cursor to the beginning of the line, whereas on Mac OS X the same key moves
-  to the beginning of the document.
+* 不会为 :py:meth:`~pyglet.window.Window.on_key_press` 生成键重复事件，但用户期望按住左箭头键最终会将字符移动到行首。
+* 不同的操作系统对键的行为有不同的约定。例如，在 Windows 上，Home 键通常将光标移动到行首，而在 Mac OS X 上，相同的键移动到文档的开头。
 
-pyglet windows provide the :py:meth:`~pyglet.window.Window.on_text_motion`
-event, which takes care of these problems by abstracting away the key presses
-and providing your application only with the intended cursor motion::
+Pyglet 窗口提供 :py:meth:`~pyglet.window.Window.on_text_motion` 事件，该事件通过抽象出按键并仅为应用程序提供预期的光标运动来解决这些问题
+pyglet windows provide the :py:meth:`~pyglet.window.Window.on_text_motion`::
 
     def on_text_motion(motion):
         pass
 
-`motion` is an integer which is a constant defined in
-:py:mod:`pyglet.window.key`. The following table shows the defined text motions
-and their keyboard mapping on each operating system.
+`motion` 是一个整数，它是在 :py:mod:`pyglet.window.key` 中定义的常量。下表显示了每个操作系统上定义的文本动作及其键盘映射。
 
     .. list-table::
         :header-rows: 1
@@ -315,32 +254,24 @@ and their keyboard mapping on each operating system.
           - Delete
           - Delete
 
-Keyboard exclusivity
---------------------
+键盘独占性
+---------
 
-Some keystrokes or key combinations normally bypass applications and are
-handled by the operating system.  Some examples are Alt+Tab (Command+Tab on
-Mac OS X) to switch applications and the keys mapped to Expose on Mac OS X.
+某些按键或组合键通常会绕过应用程序，并由操作系统处理。 
+一些示例是用于切换应用程序的 Alt+Tab（Mac OS X 上的 Command+Tab）和映射到 Mac OS X 上的“公开”的键。
 
-You can disable these hot keys and have them behave as ordinary keystrokes for
-your application.  This can be useful if you are developing a kiosk
-application which should not be closed, or a game in which it is possible for
-a user to accidentally press one of these keys.
+您可以禁用这些热键，并让它们像应用程序的普通击键一样运行。 
+如果您正在开发不应关闭的展台应用程序，或者用户可能会意外按下这些键之一的游戏，这将非常有用。
 
-To enable this mode, call
-:py:meth:`~pyglet.window.Window.set_exclusive_keyboard` for the window on
-which it should apply.  On Mac OS X the dock and menu bar will slide out of
-view while exclusive keyboard is activated.
+要启用此模式，请调用 :py:meth:`~pyglet.window.Window.set_exclusive_keyboard` 以获取应应用此模式的窗口。 
+在 Mac OS X 上，当专用键盘被激活时，扩展坞和菜单栏将滑出视图。
 
-The following restrictions apply on Windows:
+以下限制适用于 Windows：
 
-* Most keys are not disabled: a user can still switch away from your
-  application using Ctrl+Escape, Alt+Escape, the Windows key or
-  Ctrl+Alt+Delete.  Only the Alt+Tab combination is disabled.
+* 大多数键未禁用：用户仍然可以使用 Ctrl+Escape、Alt+Escape、Windows 键或 Ctrl+Alt+Delete 切换离开应用程序。 仅禁用 Alt+Tab 组合。
 
-The following restrictions apply on Mac OS X:
+以下限制适用于 Mac OS X：
 
-* The power key is not disabled.
+* 电源键未禁用。
 
-Use of this function is not recommended for general release applications or
-games as it violates user-interface conventions.
+不建议对常规发布应用程序或游戏使用此函数，因为它违反了用户界面约定。
