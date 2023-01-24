@@ -1,61 +1,42 @@
-Working with the mouse
+使用鼠标
 ======================
 
-All pyglet windows can receive input from a 3 button mouse with a
-2 dimensional scroll wheel.  The mouse pointer is typically drawn by the
-operating system, but you can override this and request either a different
-cursor shape or provide your own image or animation.
+所有 pyglet 窗口都可以从带有 2 维滚轮的 3 键鼠标接收输入。 
+鼠标指针通常由操作系统绘制，但您可以覆盖它并请求不同的光标形状或提供自己的图像或动画。
 
-Mouse events
-------------
+鼠标事件
+-------
 
-All mouse events are dispatched by the window which receives the event from
-the operating system.  Typically this is the window over which the mouse
-cursor is, however mouse exclusivity and drag operations mean this is not
-always the case.
+所有鼠标事件都由从操作系统接收事件的窗口调度。 
+通常，这是鼠标光标所在的窗口，但是鼠标独占性和拖动操作意味着情况并非总是如此。
 
-The coordinate space for the mouse pointer's location is relative to the
-bottom-left corner of the window, with increasing Y values approaching the top
-of the screen (note that this is "upside-down" compared with many other
-windowing toolkits, but is consistent with the default OpenGL projection in
-pyglet).
+鼠标指针位置的坐标空间相对于窗口的左下角，增加的 Y 值接近屏幕顶部。
+请注意，与许多其他窗口工具包相比，这是“颠倒”的，但与 pyglet 中的默认 OpenGL 投影一致。
 
 .. figure:: img/mouse_coordinates.png
 
-    The coordinate space for the mouse pointer.
+    鼠标指针的坐标空间。
 
-The most basic mouse event is :py:meth:`~pyglet.window.Window.on_mouse_motion`
-which is dispatched every time the mouse moves::
+最基本的鼠标事件是 :py:meth:`~pyglet.window.Window.on_mouse_motion` ，每次鼠标移动时都会调度它::
 
     def on_mouse_motion(x, y, dx, dy):
         pass
 
-The `x` and `y` parameters give the coordinates of the mouse pointer, relative
-to the bottom-left corner of the window.
+`x` 和 `y` 参数给出鼠标指针相对于窗口左下角的坐标。
 
-The event is dispatched every time the operating system registers a mouse
-movement.  This is not necessarily once for every pixel moved -- the operating
-system typically samples the mouse at a fixed frequency, and it is easy to
-move the mouse faster than this.  Conversely, if your application is not
-processing events fast enough you may find that several queued-up mouse events
-are dispatched in a single :py:meth:`~pyglet.window.Window.dispatch_events`
-call. There is no need to concern yourself with either of these issues;
-the latter rarely causes problems, and the former can not be avoided.
+每次操作系统注册鼠标移动时都会调度该事件。 
+这不一定是每个移动像素一次——操作系统通常以固定频率对鼠标进行采样，并且很容易移动鼠标的速度比这更快。 
+相反，如果您的应用程序处理事件的速度不够快，您可能会发现在单个 :py:meth:`~pyglet.window.Window.dispatch_events` 调用中调度了多个排队的鼠标事件。
+没有必要关心这两个问题中的任何一个，后者很少引起问题，前者也避免不了。
 
-Many games are not concerned with the actual position of the mouse cursor,
-and only need to know in which direction the mouse has moved.  For example,
-the mouse in a first-person game typically controls the direction the player
-looks, but the mouse pointer itself is not displayed.
+许多游戏并不关心鼠标光标的实际位置，只需要知道鼠标向哪个方向移动。 
+例如，第一人称游戏中的鼠标通常控制玩家的看向，但不显示鼠标指针本身。
 
-The `dx` and `dy` parameters are for this purpose: they give the distance the
-mouse travelled along each axis to get to its present position.  This can be
-computed naively by storing the previous `x` and `y` parameters after every
-mouse event, but besides being tiresome to code, it does not take into account
-the effects of other obscuring windows.  It is best to use the `dx` and `dy`
-parameters instead.
+`dx` 和 `dy` 参数用于此目的：它们给出鼠标沿每个轴行进到当前位置的距离。 
+这可以通过在每次鼠标事件后存储以前的`x`和`y`参数来天真地计算，但除了编码繁琐之外，它没有考虑其他遮挡窗口的影响。 
+最好改用 `dx` 和 `dy` 参数。
 
-The following events are dispatched by the Window when a mouse button is
-pressed or released, or the mouse is moved while any button is held down::
+按下或释放鼠标按钮或在按住任何按钮时移动鼠标时，窗口调度以下事件::
 
     def on_mouse_press(x, y, button, modifiers):
         pass
@@ -66,23 +47,18 @@ pressed or released, or the mouse is moved while any button is held down::
     def on_mouse_drag(x, y, dx, dy, buttons, modifiers):
         pass
 
-The `x`, `y`, `dx` and `dy` parameters are as for the
-:py:meth:`~pyglet.window.Window.on_mouse_motion` event.
-The press and release events do not require `dx` and `dy` parameters as they
-would be zero in this case.  The `modifiers` parameter is as for the keyboard
-events, see :ref:`guide_working-with-the-keyboard`.
+`x`、 `y` 、 `dx` 和 `dy` 参数与 :py:meth:`~pyglet.window.Window.on_mouse_motion` 事件相同。
+按下和释放事件不需要 `dx` 和 `dy`参数，因为在这种情况下它们将为零。 
+`modifiers` 参数与键盘事件相同，请参阅 :ref:`guide_working-with-the-keyboard` 。
 
-The `button` parameter signifies which mouse button was pressed, and is one of
-the following constants::
+`button` 参数表示按下了哪个鼠标按钮，并且是以下常量之一::
 
     pyglet.window.mouse.LEFT
     pyglet.window.mouse.MIDDLE
     pyglet.window.mouse.RIGHT
 
-The `buttons` parameter in :py:meth:`~pyglet.window.Window.on_mouse_drag`
-is a bitwise combination of all the mouse buttons currently held down.
-For example, to test if the user is performing a drag gesture with the
-left button::
+:py:meth:`~pyglet.window.Window.on_mouse_drag` 中的 `buttons` 参数是当前按住的所有鼠标按钮的按位组合。
+例如，测试用户是否正在使用左键执行拖动手势::
 
     from pyglet.window import mouse
 
@@ -90,16 +66,11 @@ left button::
         if buttons & mouse.LEFT:
             pass
 
-When the user begins a drag operation (i.e., pressing and holding a mouse
-button and then moving the mouse), the window in which they began the drag
-will continue to receive the :py:meth:`~pyglet.window.Window.on_mouse_drag`
-event as long as the button is held down.
-This is true even if the mouse leaves the window.
-You generally do not need to handle this specially: it is a convention
-among all operating systems that dragging is a gesture rather than a direct
-manipulation of the user interface widget.
+当用户开始拖动操作（即按住鼠标按钮，然后移动鼠标）时，只要按住按钮，他们开始拖动的窗口将继续接收 :py:meth:`~pyglet.window.Window.on_mouse_drag` 事件。
+即使鼠标离开窗口也是如此。
+您通常不需要特别处理此问题：所有操作系统的惯例是拖动是一种手势，而不是对用户界面小部件的直接操作。
 
-There are events for when the mouse enters or leaves a window::
+鼠标进入或离开窗口时存在事件::
 
     def on_mouse_enter(x, y):
         pass
@@ -107,50 +78,37 @@ There are events for when the mouse enters or leaves a window::
     def on_mouse_leave(x, y):
         pass
 
-The coordinates for :py:meth:`~pyglet.window.Window.on_mouse_leave` will
-lie outside of your window. These events are not dispatched while a drag
-operation is taking place.
+:py:meth:`~pyglet.window.Window.on_mouse_leave` 的坐标将位于您的窗外。执行拖动操作时，不会调度这些事件。
 
-The mouse scroll wheel generates the
-:py:meth:`~pyglet.window.Window.on_mouse_scroll` event::
+鼠标滚轮生成 :py:meth:`~pyglet.window.Window.on_mouse_scroll` 事件::
 
     def on_mouse_scroll(x, y, scroll_x, scroll_y):
         pass
 
-The `scroll_y` parameter gives the number of "clicks" the wheel moved, with
-positive numbers indicating the wheel was pushed forward.  The `scroll_x`
-parameter is 0 for most mice, however some new mice such as the Apple Mighty
-Mouse use a ball instead of a wheel; the `scroll_x` parameter gives the
-horizontal movement in this case.  The scale of these numbers is not known; it
-is typically set by the user in their operating system preferences.
+`scroll_y` 参数给出滚轮移动的“点击”次数，正数表示滚轮向前推。 
+大多数鼠标的 `scroll_x` 参数为 0，但是一些新鼠标（如苹果超强滑鼠）使用球而不是轮子，在这种情况下， `scroll_x` 参数给出了水平移动。 
+这些数字的规模尚不清楚，它通常由用户在其操作系统首选项中设置。
 
-Changing the mouse cursor
--------------------------
+更改鼠标光标
+-----------
 
-The mouse cursor can be set to one of the operating system cursors, a custom
-image, or hidden completely.  The change to the cursor will be applicable only
-to the window you make the change to.  To hide the mouse cursor, call
-:py:meth:`~pyglet.window.Window.set_mouse_visible`::
+鼠标光标可以设置为操作系统光标之一、自定义映像或完全隐藏。 
+对光标的更改将仅适用于您进行更改的窗口。 
+要隐藏鼠标光标，请调用 :py:meth:`~pyglet.window.Window.set_mouse_visible`::
 
     win = pyglet.window.Window()
     win.set_mouse_visible(False)
 
-This can be useful if the mouse would obscure text that the user is typing.
-If you are hiding the mouse cursor for use in a game environment, consider
-making the mouse exclusive instead; see :ref:`guide_mouse-exclusivity`, below.
+如果鼠标会遮挡用户正在键入的文本，这可能很有用。
+如果要隐藏鼠标光标以在游戏环境中使用，请考虑改为将鼠标设置为独占;请参阅下面的：:ref:`guide_mouse-exclusivity`。
 
-Use :py:meth:`~pyglet.window.Window.set_mouse_cursor` to change the appearance
-of the mouse cursor. A mouse cursor is an instance of
-:py:class:`~pyglet.window.MouseCursor`. You can obtain the operating
-system-defined cursors with
-:py:meth:`~pyglet.window.Window.get_system_mouse_cursor`::
+使用 :py:meth:`~pyglet.window.Window.set_mouse_cursor` 更改鼠标光标的外观。
+鼠标光标是 :py:class:`~pyglet.window.MouseCursor` 的实例。您可以使用以下命令获取操作系统定义的游标 :py:meth:`~pyglet.window.Window.get_system_mouse_cursor`::
 
     cursor = win.get_system_mouse_cursor(win.CURSOR_HELP)
     win.set_mouse_cursor(cursor)
 
-The cursors that pyglet defines are listed below, along with their typical
-appearance on Windows and Mac OS X.  The pointer image on Linux is dependent
-on the window manager.
+下面列出了 pyglet 定义的游标，以及它们在 Windows 和 Mac OS X 上的典型外观。 Linux 上的指针图像依赖于窗口管理器。
 
     .. list-table::
         :header-rows: 1
@@ -218,51 +176,37 @@ on the window manager.
           - .. image:: img/cursor_win_wait_arrow.png
           - .. image:: img/cursor_mac_default.png
 
-Alternatively, you can use your own image as the mouse cursor.  Use
-:py:func:`pyglet.image.load` to load the image, then create an
-:py:class:`~pyglet.window.ImageMouseCursor` with
-the image and "hot-spot" of the cursor.  The hot-spot is the point of the
-image that corresponds to the actual pointer location on screen, for example,
-the point of the arrow::
+或者，您可以使用自己的图像作为鼠标光标。 
+使用 :py:func:`pyglet.image.load` 加载图像，然后创建一个包含图像和光标“热点”的 :py:class:`~pyglet.window.ImageMouseCursor` 。 
+热点是与屏幕上的实际指针位置相对应的图像点，例如箭头的点::
 
     image = pyglet.image.load('cursor.png')
     cursor = pyglet.window.ImageMouseCursor(image, 16, 8)
     win.set_mouse_cursor(cursor)
 
-You can even render a mouse cursor directly with OpenGL.  You could draw a
-3-dimensional cursor, or a particle trail, for example.  To do this, subclass
-:py:class:`~pyglet.window.MouseCursor` and implement your own draw method.
-The draw method will be called with the default pyglet window projection,
-even if you are using another projection in the rest of your application.
+您甚至可以使用 OpenGL 直接渲染鼠标光标。 例如，您可以绘制三维光标或粒子轨迹。 
+为此，子类 :py:class:`~pyglet.window.MouseCursor` 并实现您自己的绘制方法。
+将使用默认的 pyglet 窗口投影调用 draw 方法，即使您在应用程序的其余部分使用另一个投影也是如此。
 
 .. _guide_mouse-exclusivity:
 
-Mouse exclusivity
------------------
+鼠标独占性
+---------
 
-It is possible to take complete control of the mouse for your own application,
-preventing it being used to activate other applications.  This is most useful
-for immersive games such as first-person shooters.
+您可以完全控制自己的应用程序的鼠标，防止它被用来激活其他应用程序。
+这对于第一人称射击游戏等沉浸式游戏最有用。
 
-When you enable mouse-exclusive mode, the mouse cursor is no longer available.
-It is not merely hidden -- no amount of mouse movement will make it leave your
-application.  Because there is no longer a mouse cursor, the `x` and `y`
-parameters of the mouse events are meaningless; you should use only the `dx`
-and `dy` parameters to determine how the mouse was moved.
+启用鼠标独占模式后，鼠标光标将不再可用。
+它不仅仅是隐藏的——再多的鼠标移动也不会使它离开您的应用程序。 
+由于不再有鼠标光标，因此鼠标事件的“x”和“y”参数毫无意义，您应该仅使用“DX”和“DY”参数来确定鼠标的移动方式。
 
-Activate mouse exclusive mode with
-:py:meth:`~pyglet.window.Window.set_exclusive_mouse`::
+激活鼠标独占模式 :py:meth:`~pyglet.window.Window.set_exclusive_mouse`::
 
     win = pyglet.window.Window()
     win.set_exclusive_mouse(True)
 
-You should activate mouse exclusive mode even if your window is full-screen:
-it will prevent the window "hitting" the edges of the screen, and behave
-correctly in multi-monitor setups (a common problem with commercial
-full-screen games is that the mouse is only hidden, meaning it can
-accidentally travel onto the other monitor where applications are still
-visible).
+即使您的窗口是全屏的，您也应该激活鼠标独占模式：
+它将防止窗口“碰到”屏幕边缘，并在多显示器设置中正常运行。
+商业全屏游戏的一个常见问题是鼠标只是隐藏的，这意味着它可能会意外地移动到应用程序仍然可见的其他显示器上。
 
-Note that on Linux setting exclusive mouse also disables Alt+Tab and other
-hotkeys for switching applications.  No workaround for this has yet been
-discovered.
+请注意，在 Linux 设置独占鼠标时，还会禁用 Alt+Tab 和其他用于切换应用程序的热键。 尚未发现解决此问题的方法。
