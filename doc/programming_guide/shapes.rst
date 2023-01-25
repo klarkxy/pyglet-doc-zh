@@ -1,50 +1,42 @@
-Drawing Shapes
+绘制形状
 ==============
 
 .. _guide_shapes:
 
+:py:mod:`~pyglet.shapes` 模块是一个易于使用的选项，用于创建和操作彩色形状，如矩形、圆形和线条。
+在适用的情况下，可以调整形状的大小、定位和旋转形状，并且可以更改其颜色和不透明度。
+所有形状都是使用 OpenGL 基元实现的，因此可以使用 :ref:`guide_batched-rendering` 有效地绘制它们。
+在以下示例中，为简洁起见，将省略 `Batch` ，但通常您始终希望使用批处理渲染来提高性能。
 
-The :py:mod:`~pyglet.shapes` module is an easy to use option for creating
-and manipulating colored shapes, such as rectangles, circles, and
-lines. Shapes can be resized, positioned, and rotated where applicable,
-and their color and opacity can be changed. All shapes are implemented
-using OpenGL primitives, so they can be drawn efficiently with :ref:`guide_batched-rendering`.
-In the following examples `Batch` will be ommitted for brevity, but in
-general you always want to use Batched rendering for performance.
+要绘制更复杂的形状，请使用 :ref:`guide_graphics` 模块。
 
-For drawing more complex shapes, see the :ref:`guide_graphics` module.
-
-
-Creating a Shape
+创建形状
 ----------------
 
-Various shapes can be constructed with a specific position, size, and color::
+可以构建具有特定位置，大小和颜色的各种形状::
 
     circle = shapes.Circle(x=100, y=150, radius=100, color=(50, 225, 30))
     square = shapes.Rectangle(x=200, y=200, width=200, height=200, color=(55, 55, 255))
 
-You can also change the color, or set the opacity after creation. The opacity
-can be set on a scale of 0-255, for various levels of transparency::
+您还可以更改颜色，或在创建后设置不透明度。不透明度可以设置为 0-255 的比例，以实现各种级别的透明度::
 
     circle.opacity = 120
 
-The size of Shapes can also be adjusted after creation::
+形状的大小也可以在创建后调整::
 
     square.width = 200
     circle.radius = 99
 
 
-Anchor Points
-^^^^^^^^^^^^^
+锚点
+^^^^
 
-Similar to images in pyglet, the "anchor point" of a Shape can be set.
-This relates to the center of the shape on the x and y axis. For Circles,
-the default anchor point is the center of the circle. For Rectangles,
-it is the bottom left corner. Depending on how you need to position your
-Shapes, this can be changed. For Rectangles this is especially useful if
-you will rotate it, since Shapes will rotate around the anchor point. In
-this example, a Rectangle is created, and the anchor point is then set to
-the center::
+与 pyglet 中的图像类似，可以设置形状的“锚点”。
+这与 x 轴和 y 轴上的形状中心有关。
+对于圆，默认锚点是圆的中心。对于矩形，它是左下角。
+根据您需要如何定位形状，可以更改此设置。
+对于矩形，如果要旋转矩形，这将特别有用，因为形状将围绕锚点旋转。
+在此示例中，将创建一个矩形，然后将锚点设置为中心::
 
     rectangle = shapes.Rectangle(x=400, y=400, width=100, height=50)
     rectangle.anchor_x = 50
@@ -55,8 +47,7 @@ the center::
     # The rectangle is then rotated around its anchor point:
     rectangle.rotation = 45
 
-If you plan to create a large number of shapes, you can optionally set the
-default anchor points::
+如果计划创建大量形状，可以选择设置默认锚点::
 
     shapes.Rectangle._anchor_x = 100
     shapes.Rectangle._anchor_y = 50

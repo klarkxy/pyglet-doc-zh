@@ -1,73 +1,52 @@
-Images and Sprites
+图像和精灵
 ==================
 
-pyglet provides functions for loading and saving images in various formats
-using native operating system services.  If the `Pillow`_ library is installed,
-many additional formats can be supported.   pyglet also includes built-in
-codecs for loading PNG and BMP without external dependencies.
+pyglet 提供了使用本机操作系统服务加载和保存各种格式的图像的功能。 如果安装了 `Pillow`_ 库，则可以支持许多其他格式。  
+pyglet 还包括内置编解码器，用于在没有外部依赖项的情况下加载 PNG 和 BMP。
 
-Loaded images can be efficiently provided to OpenGL as a texture, and OpenGL
-textures and framebuffers can be retrieved as pyglet images to be saved or
-otherwise manipulated.
+加载的图像可以有效地作为纹理提供给OpenGL，OpenGL纹理和帧缓冲区可以作为pyglet图像检索以进行保存或以其他方式操作。
 
-If you've done any game or graphics programming, you're probably familiar with
-the concept of "sprites".  pyglet also provides an efficient and comprehensive
-:py:class:`~pyglet.sprite.Sprite` class, for displaying images on the screen
-with an optional transform (such as scaling and rotation). If you're planning
-to do anything with images that involves movement and placement on screen,
-you'll likely want to use sprites.
+如果你做过任何游戏或图形编程，你可能熟悉“精灵”的概念。 
+pyglet 还提供了一个高效而全面的 :py:class:`~pyglet.sprite.Sprite` 类，用于在屏幕上显示带有可选变换（如缩放和旋转）的图像。
+如果您打算对涉及在屏幕上移动和放置的图像执行任何操作，则可能需要使用精灵。
 
 .. _Pillow: https://pillow.readthedocs.io
 
-Loading an image
-----------------
+加载图像
+-------
 
-Images can be loaded using the :py:func:`pyglet.image.load` function::
+可以使用 :py:func:`pyglet.image.load` 函数加载图像::
 
     kitten = pyglet.image.load('kitten.png')
 
-If you are distributing your application with included images, consider
-using the :py:mod:`pyglet.resource` module (see  :ref:`guide_resources`).
+如果要分发包含映像的应用程序，请考虑使用 :py:mod:`pyglet.resource` 模块（请参阅 :ref:`guide_resources` ）。
 
-Without any additional arguments, :py:func:`pyglet.image.load` will
-attempt to load the filename specified using any available image decoder.
-This will allow you to load PNG, GIF, JPEG, BMP and DDS files,
-and possibly other files as well, depending on your operating system
-and additional installed modules (see the next section for details).
-If the image cannot be loaded, an
-:py:class:`~pyglet.image.codecs.ImageDecodeException` will be raised.
+在没有任何附加参数的情况下， :py:func:`pyglet.image.load` 将尝试加载使用任何可用的图像解码器指定的文件名。
+这将允许您加载 PNG、GIF、JPEG、BMP 和 DDS 文件，以及可能的其他文件，具体取决于您的操作系统和其他已安装的模块（有关详细信息，请参阅下一节）。
+如果无法加载图像，则会引发 :py:class:`~pyglet.image.codecs.ImageDecodeException` 。
 
-You can load an image from any file-like object providing a `read` method by
-specifying the `file` keyword parameter::
+您可以通过指定 `file` 关键字参数从提供 `read` 方法的任何类似文件的对象加载图像::
 
     kitten_stream = open('kitten.png', 'rb')
     kitten = pyglet.image.load('kitten.png', file=kitten_stream)
 
-In this case the filename ``kitten.png`` is optional, but gives a hint to
-the decoder as to the file type (it is otherwise unused when a file object
-is provided).
+在这种情况下，文件名 ``kitten.png`` 是可选的，但会向解码器提供有关文件类型的提示（否则在提供文件对象时未使用）。
 
-Displaying images
------------------
+显示图像
+-------
 
-Image drawing is usually done in the window's
-:py:meth:`~pyglet.window.Window.on_draw` event handler.
-It is possible to draw individual images directly, but usually you will
-want to create a "sprite" for each appearance of the image on-screen.
+图像绘制通常在窗口的 :py:meth:`~pyglet.window.Window.on_draw` 事件处理程序中完成。
+可以直接绘制单个图像，但通常您需要为屏幕上图像的每次外观创建一个“精灵”。
 
-Sprites
-^^^^^^^
+精灵
+^^^^
 
-A Sprite is a full featured class for displaying instances of Images or
-Animations in the window. Image and Animation instances are mainly concerned
-with the image data (size, pixels, etc.), wheras Sprites also include
-additional properties. These include x/y location, scale, rotation, opacity,
-color tint, visibility, and both horizontal and vertical scaling.
-Multiple sprites can share the same image; for example, hundreds of bullet
-sprites might share the same bullet image.
+精灵是一个功能齐全的类，用于在窗口中显示图像或动画的实例。
+图像和动画实例主要关注图像数据（大小、像素等），而精灵还包括其他属性。
+其中包括 x/y 位置、缩放、旋转、不透明度、色调、可见性以及水平和垂直缩放。
+多个精灵可以共享同一图像，例如，数百个子弹精灵可能共享相同的子弹图像。
 
-A Sprite is constructed given an image or animation, and can be directly
-drawn with the :py:meth:`~pyglet.sprite.Sprite.draw` method::
+精灵是在给定图像或动画的情况下构建的，可以使用 :py:meth:`~pyglet.sprite.Sprite.draw` 方法直接绘制::
 
     sprite = pyglet.sprite.Sprite(img=image)
 
@@ -76,9 +55,7 @@ drawn with the :py:meth:`~pyglet.sprite.Sprite.draw` method::
         window.clear()
         sprite.draw()
 
-If created with an animation, sprites automatically handle displaying
-the most up-to-date frame of the animation.  The following example uses a
-scheduled function to gradually move the Sprite across the screen::
+如果使用动画创建，则精灵会自动处理显示动画的最新帧。 以下示例使用定时函数在屏幕上逐渐移动精灵::
 
     def update(dt):
         # Move 10 pixels per second
@@ -87,9 +64,8 @@ scheduled function to gradually move the Sprite across the screen::
     # Call update 60 times a second
     pyglet.clock.schedule_interval(update, 1/60.)
 
-If you need to draw many sprites, using a :py:class:`~pyglet.graphics.Batch`
-to draw them all at once is strongly recommended.  This is far more efficient
-than calling :py:meth:`~pyglet.sprite.Sprite.draw` on each of them in a loop::
+如果您需要绘制许多精灵，强烈建议使用 :py:class:`~pyglet.graphics.Batch`一次绘制所有精灵。 
+这比在循环中调用 :py:meth:`~pyglet.sprite.Sprite.draw` 要有效得多::
 
     batch = pyglet.graphics.Batch()
 
@@ -102,12 +78,8 @@ than calling :py:meth:`~pyglet.sprite.Sprite.draw` on each of them in a loop::
         window.clear()
         batch.draw()
 
-When sprites are collected into a batch, no guarantee is made about the order
-in which they will be drawn.  If you need to ensure some sprites are drawn
-before others (for example, landscape tiles might be drawn before character
-sprites, which might be drawn before some particle effect sprites), use two
-or more :py:class:`~pyglet.graphics.OrderedGroup` objects to specify the
-draw order::
+批处理绘制精灵时，不保证它们的绘制顺序。 
+如果需要确保在绘制某些精灵之前绘制某些精灵（例如，横向图块可能绘制在角色精灵之前，而角色精灵可能在某些粒子效果精灵之前绘制），请使用两个或多个 :py:class:`~pyglet.graphics.OrderedGroup`对象来指定绘制顺序::
 
     batch = pyglet.graphics.Batch()
     background = pyglet.graphics.OrderedGroup(0)
@@ -124,43 +96,31 @@ draw order::
         window.clear()
         batch.draw()
 
-For best performance, you should use as few batches and groups as required.
-(See the :ref:`guide_graphics` section for more details on batch
-and group rendering). This will reduce the number of internal and OpenGL
-operations for drawing each frame.
+为了获得最佳性能，应根据需要使用尽可能少的批次和组。
+（有关批处理和组渲染的更多详细信息，请参阅 :ref:`guide_graphics` 部分）。这将减少绘制每个帧的内部和 OpenGL 操作的数量。
 
-In addition, try to combine your images into as few textures as possible;
-for example, by loading images with :py:func:`pyglet.resource.image`
-(see :ref:`guide_resources`) or with :ref:`guide_texture-bins-and-atlases`).
-A common pitfall is to use the :py:func:`pyglet.image.load` method to load
-a large number of images.  This will cause a seperate texture to be created
-for each image loaded, resulting in a lot of OpenGL texture binding overhead
-for each frame.
+此外，尝试将您的图像组合成尽可能少的纹理，例如，通过使用 :py:func:`pyglet.resource.image` （参见 :ref:`guide_resources` ）或 :ref:`guide_texture-bins-and-atlases` 加载图像。
+一个常见的陷阱是使用 :py:func:`pyglet.image.load` 方法来加载大量图像。 
+这将导致为每个加载的图像创建单独的纹理，从而导致每个帧的大量 OpenGL 纹理绑定开销。
 
-Simple image blitting
-^^^^^^^^^^^^^^^^^^^^^
+简单的图像块传输
+^^^^^^^^^^^^^^^
 
-Drawing images directly is less efficient, but may be adequate for
-simple cases. Images can be drawn into a window with the
-:py:meth:`~pyglet.image.AbstractImage.blit` method::
+直接绘制图像效率较低，但对于简单情况可能足够。图像可以使用 :py:meth:`~pyglet.image.AbstractImage.blit` 方法绘制到窗口中::
 
     @window.event
     def on_draw():
         window.clear()
         image.blit(x, y)
 
-The `x` and `y` coordinates locate where to draw the anchor point of the
-image.  For example, to center the image at ``(x, y)``::
+`x` 和 `y` 坐标用于定位绘制图像锚点的位置。 例如，将图像居中置于 ``(x, y)``::
 
     kitten.anchor_x = kitten.width // 2
     kitten.anchor_y = kitten.height // 2
     kitten.blit(x, y)
 
-You can also specify an optional `z` component to the
-:py:meth:`~pyglet.image.AbstractImage.blit` method.
-This has no effect unless you have changed the default projection
-or enabled depth testing.  In the following example, the second
-image is drawn *behind* the first, even though it is drawn after it::
+您还可以为 :py:meth:`~pyglet.image.AbstractImage.blit` 方法指定可选的 `z` 组件。
+除非您更改了默认投影或启用了深度测试，否则此操作不起作用。 在下面的示例中，第二个图像绘制在第一个图像后面，即使它是在它之后绘制的::
 
     from pyglet.gl import *
     glEnable(GL_DEPTH_TEST)
@@ -168,25 +128,21 @@ image is drawn *behind* the first, even though it is drawn after it::
     kitten.blit(x, y, 0)
     kitten.blit(x, y, -0.5)
 
-The default pyglet projection has a depth range of (-1, 1) -- images drawn
-with a z value outside this range will not be visible, regardless of whether
-depth testing is enabled or not.
+默认 pyglet 投影的深度范围为 (-1, 1) ——无论是否启用深度测试，使用 z 值超出此范围绘制的图像都将不可见。
 
-Images with an alpha channel can be blended with the existing framebuffer.  To
-do this you need to supply OpenGL with a blend equation.  The following code
-fragment implements the most common form of alpha blending, however other
-techniques are also possible::
+具有 Alpha 通道的图像可以与现有帧缓冲混合。 
+为此，您需要为 OpenGL 提供一个混合方程。 
+以下代码片段实现了最常见的 alpha 混合形式，但也可以使用其他技术::
 
     from pyglet.gl import *
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-You would only need to call the code above once during your program, before
-you draw any images (this is not necessary when using only sprites).
+在绘制任何图像之前，您只需在程序期间调用上述代码一次（仅使用精灵时不需要这样做）。
 
-Supported image decoders
-------------------------
-The following table shows which codecs are available in pyglet. 
+支持的图像解码器
+---------------
+下表显示了 pyglet 中可用的编解码器。
 
     .. list-table::
         :header-rows: 1
@@ -220,31 +176,21 @@ The following table shows which codecs are available in pyglet.
           - ``BMPImageDecoder``
           - BMP decoder written in pure Python.
 
-Each of these classes registers itself with :py:mod:`pyglet.image` with
-the filename extensions it supports.  The :py:func:`~pyglet.image.load`
-function will try each image decoder with a matching file extension first,
-before attempting the other decoders.  Only if every image decoder fails
-to load an image will :py:class:`~pyglet.image.codecs.ImageDecodeException`
-be raised (the origin of the exception will be the first decoder that
-was attempted).
+这些类中的每一个都使用 :py:mod:`pyglet.image` 注册自己，并带有它支持的文件扩展名。 
+:py:func:`~pyglet.image.load` 函数将首先尝试具有匹配文件扩展名的每个图像解码器，然后再尝试其他解码器。 
+仅当每个图像解码器都无法加载图像时，才会 :py:class:`~pyglet.image.codecs.ImageDecodeException`（异常的来源将是尝试的第一个解码器）。
 
-You can override this behaviour and specify a particular decoding instance to
-use.  For example, in the following example the pure Python PNG decoder is
-always used rather than the operating system's decoder::
+您可以覆盖此行为并指定要使用的特定解码实例。 例如，在下面的示例中，始终使用纯 Python PNG 解码器，而不是操作系统的解码器::
 
     from pyglet.image.codecs.png import PNGImageDecoder
     kitten = pyglet.image.load('kitten.png', decoder=PNGImageDecoder())
 
-This use is not recommended unless your application has to work around
-specific deficiences in an operating system decoder.
+除非应用程序必须解决操作系统解码器中的特定缺陷，否则不建议使用此用法。
 
-Supported image formats
------------------------
+支持的图像格式
+-------------
 
-The following table lists the image formats that can be loaded on each
-operating system.  If Pillow is installed, any additional formats it
-supports can also be read.  See the `Pillow docs`_ for a list of such
-formats.
+下表列出了可以在每个操作系统上加载的映像格式。 如果安装了 Pillow，也可以读取它支持的任何其他格式。 有关此类格式的列表，请参阅  `Pillow docs`_ 。
 
 .. _Pillow docs: http://pillow.readthedocs.io/
 
@@ -327,73 +273,55 @@ formats.
           - X
           - X
 
-The only supported save format is PNG, unless PIL is installed, in which case
-any format it supports can be written.
+唯一支持的保存格式是 PNG，除非安装了 PIL，在这种情况下，可以写入它支持的任何格式。
 
-.. [#linux] Requires GTK 2.0 or later.
+.. [#linux] 需要 GTK 2.0 或更高版本。
 
-.. [#dds] Only S3TC compressed surfaces are supported.  Depth, volume and cube
-          textures are not supported.
+.. [#dds] 仅支持 S3TC 压缩曲面。 不支持深度、体积和立方体纹理。
 
-Working with images
--------------------
+使用图像
+-------
 
-The :py:func:`pyglet.image.load` function returns an
-:py:class:`~pyglet.image.AbstractImage`. The actual class of the object depends
-on the decoder that was used, but all loaded imageswill have the following
-attributes:
+:py:func:`pyglet.image.load` 函数返回一个 :py:class:`~pyglet.image.AbstractImage` 。
+对象的实际类取决于所使用的解码器，但所有加载的图像都具有以下属性：
 
-`width`
-    The width of the image, in pixels.
+`width` 
+    图像的宽度（以像素为单位）。
 `height`
-    The height of the image, in pixels.
+    图像的高度（以像素为单位）。
 `anchor_x`
-    Distance of the anchor point from the left edge of the image, in pixels
+    锚点与图像左边缘的距离（以像素为单位）。
 `anchor_y`
-    Distance of the anchor point from the bottom edge of the image, in pixels
+    锚点与图像底部边缘的距离（以像素为单位）。
 
-The anchor point defaults to (0, 0), though some image formats may contain an
-intrinsic anchor point.  The anchor point is used to align the image to a
-point in space when drawing it.
+锚点默认为 (0, 0)，但某些图像格式可能包含固有锚点。 锚点用于在绘制图像时将图像与空间中的点对齐。
 
-You may only want to use a portion of the complete image.  You can use the
-:py:meth:`~pyglet.image.AbstractImage.get_region` method to return an image
-of a rectangular region of a source image::
+您可能只想使用完整图像的一部分。 可以使用 :py:meth:`~pyglet.image.AbstractImage.get_region`方法返回源图像的矩形区域的图像::
 
     image_part = kitten.get_region(x=10, y=10, width=100, height=100)
 
-This returns an image with dimensions 100x100.  The region extracted from
-`kitten` is aligned such that the bottom-left corner of the rectangle is 10
-pixels from the left and 10 pixels from the bottom of the image.
+这将返回尺寸为 100x100 的图像。 从 `kitten` 中提取的区域对齐，使矩形的左下角距离图像左侧 10 像素，距离图像底部 10 像素。
 
-Image regions can be used as if they were complete images.  Note that changes
-to an image region may or may not be reflected on the source image, and
-changes to the source image may or may not be reflected on any region images.
-You should not assume either behaviour.
+图像区域可以像使用完整图像一样使用。 
+请注意，对图像区域的更改可能会也可能不会反映在源图像上，对源图像的更改可能会也可能不会反映在任何区域图像上。
+您不应该假设这两种行为。
 
-The AbstractImage hierarchy
----------------------------
+抽象图像层次结构
+---------------
 
-The following sections deal with the various concrete image classes.  All
-images subclass :py:class:`~pyglet.image.AbstractImage`, which provides
-the basic interface described in previous sections.
+以下各节介绍各种具体的图像类。 所有图像子类 :py:class:`~pyglet.image.AbstractImage`，它提供了前面几节中描述的基本接口。
 
 .. figure:: img/abstract_image.png
 
-    The :py:class:`~pyglet.image.AbstractImage` class hierarchy.
+    :py:class:`~pyglet.image.AbstractImage` 类层次结构。
 
-An image of any class can be converted into a :py:class:`~pyglet.image.Texture`
-or :py:class:`~pyglet.image.ImageData` using the
-:py:meth:`~pyglet.image.AbstractImage.get_texture` and
-:py:meth:`~pyglet.image.ImageData.get_image_data` methods defined on
-:py:class:`~pyglet.image.AbstractImage`.  For example, to load an image
-and work with it as an OpenGL texture::
+任何类的图像都可以使用 :py:class:`~pyglet.image.AbstractImage` 上定义的 :py:meth:`~pyglet.image.AbstractImage.get_texture` 和 :py:meth:`~pyglet.image.ImageData.get_image_data` 方法转换为 :py:class:`~pyglet.image.Texture` 或 :py:class:`~pyglet.image.ImageData` 。 
+例如，加载图像并将其用作 OpenGL 纹理::
 
     kitten = pyglet.image.load('kitten.png').get_texture()
 
-There is no penalty for accessing one of these methods if object is already
-of the requested class.  The following table shows how concrete classes are
-converted into other classes:
+如果对象已经属于请求的类，则访问这些方法之一不会受到任何惩罚。 
+下表显示了如何将具体类转换为其他类：
 
     .. list-table::
         :header-rows: 1
@@ -421,53 +349,33 @@ converted into other classes:
           - ``glCopyTexSubImage2D`` [4]_
           - ``glReadPixels``
 
-You should try to avoid conversions which use ``glGetTexImage2D`` or
-``glReadPixels``, as these can impose a substantial performance penalty by
-transferring data in the "wrong" direction of the video bus, especially on
-older hardware.
+您应该尽量避免使用 ``glGetTexImage2D``或 ``glReadPixels`` 的转换，因为这些转换可能会在视频总线的“错误”方向上传输数据，尤其是在较旧的硬件上，从而造成严重的性能损失。
 
-.. [1]  :py:class:`~pyglet.image.ImageData` caches the texture for future use, so there is no
-        performance penalty for repeatedly blitting an
-        :py:class:`~pyglet.image.ImageData`.
+.. [1]  :py:class:`~pyglet.image.ImageData` 缓存纹理以供将来使用，因此重复传送 :py:class:`~pyglet.image.ImageData` 不会对性能造成损失。
 
-.. [2]  If the required texture compression extension is not present, the
-        image is decompressed in memory and then supplied to OpenGL via
-        ``glTexImage2D``.
+.. [2]  如果所需的纹理压缩扩展不存在，则图像将在内存中解压缩，然后通过 ``glTexImage2D`` 提供给OpenGL。
 
-.. [3]  It is not currently possible to retrieve :py:class:`~pyglet.image.ImageData` for compressed
-        texture images.  This feature may be implemented in a future release
-        of pyglet.  One workaround is to create a texture from the compressed
-        image, then read the image data from the texture; i.e.,
-        ``compressed_image.get_texture().get_image_data()``.
+.. [3]  目前无法检索压缩纹理图像的 :py:class:`~pyglet.image.ImageData` 。 
+        此功能可能会在 pyglet 的未来版本中实现。 一种解决方法是从压缩图像创建纹理，然后从纹理中读取图像数据，比如 ``compressed_image.get_texture().get_image_data()`` 。
 
-.. [4]  :py:class:`~pyglet.image.BufferImageMask` cannot be converted to
-        :py:class:`~pyglet.image.Texture`.
+.. [4]  :py:class:`~pyglet.image.BufferImageMask` 无法转换为 :py:class:`~pyglet.image.Texture`。
 
-Accessing or providing pixel data
----------------------------------
+访问或提供像素数据
+-----------------
 
-The :py:class:`~pyglet.image.ImageData` class represents an image as a string
-or sequence of pixel data, or as a ctypes pointer.  Details such as the pitch
-and component layout are also stored in the class.  You can access an
-:py:class:`~pyglet.image.ImageData` object for any image with
-:py:meth:`~pyglet.image.ImageData.get_image_data`::
+:py:class:`~pyglet.image.ImageData` 类将图像表示为像素数据的字符串或序列，或 ctypes 指针。 
+跨度和组件布局等详细信息也存储在类中。 
+您可以访问任何具有 :py:meth:`~pyglet.image.ImageData.get_image_data` 的图像的 :py:class:`~pyglet.image.ImageData` 对象
 
     kitten = pyglet.image.load('kitten.png').get_image_data()
 
-The design of :py:class:`~pyglet.image.ImageData` is to allow applications
-to access the detail in the format they prefer, rather than having to
-understand the many formats that each operating system and OpenGL make use of.
+:py:class:`~pyglet.image.ImageData` 的设计是允许应用程序以他们喜欢的格式，而不必理解每个操作系统和OpenGL使用的多种格式。
 
-The `pitch` and `format` properties determine how the bytes are arranged.
-`pitch` gives the number of bytes between each consecutive row.  The data is
-assumed to run from left-to-right, bottom-to-top, unless `pitch` is negative,
-in which case it runs from left-to-right, top-to-bottom.  There is no need for
-rows to be tightly packed; larger `pitch` values are often used to align each
-row to machine word boundaries.
+`pitch` 和 `format` 属性决定了字节的排列方式。
+`pitch` 给出每个连续行之间的字节数。 假设数据从左到右，从下到上运行，除非 `pitch` 为负数，在这种情况下，它从左到右，从上到下运行。 
+无需将行紧密包装，较大的 `pitch` 值通常用于将每行与机器单词边界对齐。
 
-The `format` property gives the number and order of color components.  It is a
-string of one or more of the letters corresponding to the components in the
-following table:
+`format` 属性给出颜色分量的数量和顺序。 它是与下表中的组件对应的一个或多个字母的字符串:
 
     = ============
     R Red
@@ -478,47 +386,32 @@ following table:
     I Intensity
     = ============
 
-For example, a format string of ``"RGBA"`` corresponds to four bytes of
-colour data, in the order red, green, blue, alpha.  Note that machine
-endianness has no impact on the interpretation of a format string.
+例如， ``"RGBA"`` 的格式字符串对应于四个字节的颜色数据，顺序为红色、绿色、蓝色、字母。 请注意，计算机字节序对格式字符串的解释没有影响。
 
-The length of a format string always gives the number of bytes per pixel.  So,
-the minimum absolute pitch for a given image is ``len(kitten.format) *
-kitten.width``.
+格式字符串的长度始终提供每个像素的字节数。 因此，给定图像的最小绝对间距为 ``len(kitten.format) * kitten.width`` 。
 
-To retrieve pixel data in a particular format, use the `get_data` method,
-specifying the desired format and pitch. The following example reads tightly
-packed rows in ``RGB`` format (the alpha component, if any, will be
-discarded)::
+要检索特定格式的像素数据，请使用 `get_data` 方法，指定所需的格式和间距。下面的示例读取 ``RGB`` 格式的紧密打包行（alpha 组件（如果有）将被丢弃）::
 
     kitten = kitten.get_image_data()
     data = kitten.get_data('RGB', kitten.width * 3)
 
-`data` always returns a string, however pixel data can be set from a
-ctypes array, stdlib array, list of byte data, string, or ctypes pointer.
-To set the image data use `set_data`, again specifying the format and pitch::
+`data` 始终返回一个字符串，但是可以从ctypes数组，stdlib数组，字节数据列表，字符串或ctypes指针中设置像素数据。
+要设置图像数据，请使用 `set_data` ，再次指定格式和跨度::
 
     kitten.set_data('RGB', kitten.width * 3, data)
 
-You can also create :py:class:`~pyglet.image.ImageData` directly, by providing
-each of these attributes to the constructor. This is any easy way to load
-textures into OpenGL from other programs or libraries.
+您还可以直接创建 :py:class:`~pyglet.image.ImageData` ，方法是向构造函数提供这些属性中的每一个。这是从其他程序或库将纹理加载到 OpenGL 中的任何简单方法。
 
-Performance concerns
-^^^^^^^^^^^^^^^^^^^^
+性能问题
+^^^^^^^^
 
-pyglet can use several methods to transform pixel data from one format to
-another.  It will always try to select the most efficient means.  For example,
-when providing texture data to OpenGL, the following possibilities are
-examined in order:
+Pyglet 可以使用多种方法将像素数据从一种格式转换为另一种格式。 它将始终尝试选择最有效的方法。 
+例如，在向OpenGL提供纹理数据时，将按顺序检查以下可能性：
 
-1. Can the data be provided directly using a built-in OpenGL pixel format such
-   as ``GL_RGB`` or ``GL_RGBA``?
-2. Is there an extension present that handles this pixel format?
-3. Can the data be transformed with a single regular expression?
-4. If none of the above are possible, the image will be split into separate
-   scanlines and a regular expression replacement done on each; then the lines
-   will be joined together again.
+1. 是否可以使用内置的OpenGL像素格式（如 ``GL_RGB`` 或 ``GL_RGBA``）直接提供数据？
+2. 是否存在处理此像素格式的扩展？
+3. 数据可以用单个正则表达式转换吗？
+4. 如果以上都不可能，图像将被拆分为单独的扫描线，并在每条扫描线上进行正则表达式替换;然后这些线将再次连接在一起。
 
 The following table shows which image formats can be used directly with steps
 1 and 2 above, as long as the image rows are tightly packed (that is, the

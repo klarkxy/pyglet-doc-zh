@@ -1,49 +1,41 @@
-Working with other input devices
+使用其他输入设备
 ================================
 
-pyglet's :py:mod:`~pyglet.input` module allows you to accept input
-from any USB human interface device (HID). High-level abstractions are
-provided for working with game controllers, joysticks, and the Apple
-Remote. The game controller abstraction is suited for modern gamepads,
-such as are found on home video game consoles. The joystick abstraction
-is more generalized, and works with devices with an arbitrary number of
-buttons, axis, and hats. This includes devices like steering wheels,
-joysticks used for flight simulators, and just about anything else. For
-most types of games, the Controller abstraction is usually the better
-choice. For advanced use cases, it's also possible to access the low-level
-devices directly.
+pyglet 的:py:mod:`~pyglet.input` 模块允许您接受来自任何 USB 人机接口设备 （HID） 的输入。
+提供了用于使用游戏控制器、操纵杆和 Apple 遥控器的高级抽象。
+游戏控制器抽象适用于现代游戏手柄，例如在家用视频游戏机上找到的游戏手柄。
+操纵杆抽象更加通用，适用于具有任意数量的按钮、轴和帽子的设备。
+这包括方向盘、用于飞行模拟器的操纵杆等设备，以及几乎任何其他设备。
+对于大多数类型的游戏，控制器抽象通常是更好的选择。对于高级用例，也可以直接访问低级设备。
 
-The :py:mod:`~pyglet.input` module provides several methods for querying
-devices, and a ControllerManager class to support hot-plugging of Controllers::
+:py:mod:`~pyglet.input` 模块提供了几种查询设备的方法，以及一个 ControllerManager 类来支持控制器的热插拔0::
 
-    # get a list of all low-level input devices:
+    # 获取所有低级输入设备的列表:
     devices = pyglet.input.get_devices()
 
-    # get a list of all controllers:
+    # 获取所有控制器的列表:
     controllers = pyglet.input.get_controllers()
 
-    # get a list of all joysticks:
+    # 获取所有操纵杆的列表:
     joysticks = pyglet.input.get_controllers()
 
-    # get a list of tablets:
+    # 获取触摸屏列表:
     tablets = pyglet.input.get_tablets()
 
-    # get an Apple Remote, if available:
+    # 获取苹果遥控器（如果有）:
     remote = pyglet.input.get_apple_remote()
 
-    # create a ControllerManager instance:
+    # 创建控制器管理器实例:
     controller_manager = pyglet.input.ControllerManager()
 
 
-Using Controllers
------------------
+使用控制器
+---------
 
-Controllers have a strictly defined set of inputs that mimic the
-layout of popular video game console Controllers. This includes two
-analog sticks, a directional pad (dpad), face and shoulder buttons,
-as well as start/back/guide and stick press buttons. Many controllers
-also include the ability to play rumble effects (vibration).
-The following platform interfaces are used for Controller support:
+控制器具有一组严格定义的输入，模仿流行的视频游戏机控制器的布局。
+这包括两个模拟摇杆、一个方向键 （dpad）、面部和肩部按钮，以及开始/返回/指南和摇杆按下按钮。
+许多控制器还包括播放隆隆声效果（振动）的能力。
+以下平台接口用于控制器支持：
 
     .. list-table::
         :header-rows: 1
@@ -64,24 +56,21 @@ The following platform interfaces are used for Controller support:
           - IOKit
           - rumble not yet implemented
 
-Before using a controller, you must find it and open it. A ControllerManager
-class is provided to allow hot-plugging of Controllers, but they can also
-be opened manually. To manually get a list of all controllers currently
-connected to your computer, call pyglet.input.get_controllers()::
+在使用控制器之前，必须找到它并将其打开。
+pyglet提供了一个控制器管理器类以允许控制器的热插拔，但也可以手动打开它们。
+要手动获取当前连接到计算机的所有控制器的列表，请调用 pyglet.input.get_controllers()::
 
     controllers = pyglet.input.get_controllers()
 
-Then choose a controller from the list and call `Controller.open()` to open it::
+然后从列表中选择一个控制器并调用 `Controller.open()` 将其打开::
 
     if controllers:
         controller = controllers[0]
 
     controller.open()
 
-Once opened, you you can start receiving data from the the inputs.
-A variety of analog and digital :py:class:`~pyglet.input.Control` types
-are defined, which are automatically normalized to consistent ranges. The
-following analog controls are available:
+打开后，您可以开始从输入接收数据。
+定义了各种模拟和数字 :py:class:`~pyglet.input.Control` 类型，这些类型会自动规范化为一致的范围。提供以下模拟控件：
 
     .. list-table::
         :header-rows: 1
@@ -114,7 +103,7 @@ following analog controls are available:
           - float
           - 0,1
 
-The following digital controls are available:
+提供以下数字控件:
 
     .. list-table::
         :header-rows: 1
@@ -152,18 +141,14 @@ The following digital controls are available:
         * - dpdown
           -
 
-These values can be read in two ways. All controls listed above are properties
-on the controller instance, so they can be manually queried in your game loop::
+可以通过两种方式读取这些值。上面列出的所有控件都是控制器实例上的属性，因此可以在游戏循环中手动查询它们::
 
     controller_instance.a       # boolean
     controller_instance.leftx   # float
 
 
-Alternatively, since controllers are a subclass of :py:class:`~pyglet.event.EventDispatcher`,
-events will be dispatched when any of the values change. This is generally the
-recommended way to handle input, since it reduces the chance of "missed" button
-presses due to slow polling. The different controls are grouped into the following
-event types:
+或者，由于控制器是 :py:class:`~pyglet.event.EventDispatcher` 的子类，因此当任何值更改时将调度事件。
+这通常是处理输入的推荐方法，因为它减少了由于轮询缓慢而导致“错过”按钮按下的机会。不同的控件分为以下事件类型:
 
     .. list-table::
         :header-rows: 1
@@ -193,7 +178,7 @@ event types:
           - :py:class:`~pyglet.input.Controller`, `str`, `float`
 
 
-Here is how you would handle the analog events::
+以下是处理模拟事件的方法::
 
     @controller.event
     def on_stick_motion(controller, name, x_value, y_value):
@@ -212,7 +197,7 @@ Here is how you would handle the analog events::
         elif name == "righttrigger":
             # Do something with the value
 
-Here is how you would handle the digital events::
+以下是如何处理数字事件::
 
     @controller.event
     def on_button_press(controller, button_name):
@@ -229,7 +214,7 @@ Here is how you would handle the digital events::
         elif button_name == 'b':
             # do something else
 
-Finally, the directional pad event can be handled like this::
+最后，方向键事件可以这样处理::
 
     @controller.event
     def on_dpad_motion(controller, dpleft, dpright, dpup, dpdown):
@@ -242,53 +227,46 @@ Finally, the directional pad event can be handled like this::
         if dpright:
             # move right
 
-Rumble
-^^^^^^
+震动
+^^^^
 
-Many controllers also support playing rumble (vibration) effects. There
-are both strong and weak effects, which can be played independently::
+许多控制器还支持播放隆隆声（振动）效果。有强效和弱效，可以独立播放::
 
     controller.rumble_play_weak(strength, duration=0.5)
     controller.rumble_play_strong(strength, duration=0.5)
 
-The `strength` parameter should be on a scale of 0-1. Values outside of
-this range will be clamped. The optional `duration` parameter is in seconds.
-The maximum duration can vary from platform to platform, but is usually
-at least 5 seconds. If you call play again while an existing effect is
-still playing, it will replace the current one. You can also stop
-playback of a rumble effect at any time::
+`strength`参数应为 0-1 的范围。超出此范围的值将被限制。可选的 `duration` 参数以秒为单位。
+最长持续时间可能因平台而异，但通常至少为 5 秒。
+如果在现有效果仍在播放时再次调用 play，它将替换当前效果。您也可以随时停止播放隆隆声效果::
 
     controller.rumble_stop_weak()
     controller.rumble_stop_strong()
 
 
-ControllerManager
-^^^^^^^^^^^^^^^^^
+控制器管理器
+^^^^^^^^^^^
 
-To simplify hot-plugging of Controllers, the :py:class:`~pyglet.input.ControllerManager`
-class is available. This class has a `get_controllers()` method to be used
-in place of `pyglet.input.get_controllers()`. There are also `on_connect`
-and `on_disconnect` events, which dispatch a Controller instance
-whenever one is connected or disconnected. If case a previously connected
-Controller is re-connected, the same instance will be returned when possible.
+为了简化控制器的热插拔，可以使用 :py:class:`~pyglet.input.ControllerManager` 类。
+此类有一个 `get_controllers()` 方法代替 `pyglet.input.get_controllers()` 。
+还有 `on_connect`和 `on_disconnect` 事件，每当连接或断开连接控制器实例时，它们都会调度控制器实例。
+如果重新连接了以前连接的控制器，则在可能的情况下将返回相同的实例。
 
-To use a ControllerManager, first create an instance::
+要使用控制器管理器，请先创建一个实例::
 
     manager = pyglet.input.ControllerManager()
 
-You can then query the currently connected controllers, similar to
-doing it directly::
+然后，您可以查询当前连接的控制器，类似于直接执行此操作::
 
     controllers = manager.get_controllers()
 
-As usual, choose a controller from the list and call `Controller.open()` to open it::
+像往常一样，从列表中选择一个控制器，然后调用 `Controller.open()`将其打开::
 
     if controllers:
         controller = controllers[0]
 
     controller.open()
 
-To handle controller connections, attach handlers to the following methods::
+若要处理控制器连接，请将处理程序附加到以下方法::
 
     @manager.event
     def on_connect(controller):
@@ -299,104 +277,75 @@ To handle controller connections, attach handlers to the following methods::
         print(f"Disconnected:  {controller}")
 
 
-.. note:: If you are using a ControllerManager, then you should not use
-          `pyglet.input.get_controllers()` directly. The results are
-          undefined. Use `ControllerManager.get_controllers()` instead.
+.. note:: 如果您使用的是控制器管理器，则不应直接使用 `pyglet.input.get_controllers()` 。
+          结果未定义。请改用 `ControllerManager.get_controllers()` 。
 
 
-Using Joysticks
+使用操纵杆
 ---------------
 
-Before using a joystick, you must find it and open it.  To get a list
-of all joystick devices currently connected to your computer, call
-:py:func:`pyglet.input.get_joysticks`::
+在使用操纵杆之前，您必须找到它并打开它。 
+要获取当前连接到计算机的所有操纵杆设备的列表，请调用 :py:func:`pyglet.input.get_joysticks` ::
 
     joysticks = pyglet.input.get_joysticks()
 
-Then choose a joystick from the list and call `Joystick.open` to open
-the device::
+然后从列表中选择一个操纵杆并调用 `Joystick.open` 以打开设备::
 
     if joysticks:
         joystick = joysticks[0]
     joystick.open()
 
-The current position of the joystick is recorded in its 'x' and 'y'
-attributes, both of which are normalized to values within the range
-of -1 to 1.  For the x-axis, `x` = -1 means the joystick is pushed
-all the way to the left and `x` = 1 means the joystick is pushed to the right.
-For the y-axis, a value of `y` = -1 means that the joystick is pushed up
-and a value of `y` = 1 means that the joystick is pushed down.
+操纵杆的当前位置记录在其 `x` 和 `y` 属性中，这两个属性都归一化为 -1 到 1 范围内的值。 
+对于 x 轴， `x`  = -1 表示操纵杆一直向左推， `x`  = 1 表示向右推操纵杆。
+对于 y 轴，值 `y` = -1 表示操纵杆被向上推，值 `y` = 1 表示操纵杆被向下推。
 
-If your joystick has two analog controllers, the position of the
-second controller is typically given by `z` and `rz`, where `z` is the
-horizontal axis position and `rz` is the vertical axis position.
+如果您的操纵杆有两个模拟控制器，则第二个控制器的位置通常由 `z` 和 `rz` 给出，其中 `z` 是水平轴位置， `rz` 是垂直轴位置。
 
-The state of the joystick buttons is contained in the `buttons`
-attribute as a list of boolean values.  A True value indicates that
-the corresponding button is being pressed.  While buttons may be
-labeled A, B, X, or Y on the physical joystick, they are simply
-referred to by their index when accessing the `buttons` list. There
-is no easy way to know which button index corresponds to which
-physical button on the device without testing the particular joystick,
-so it is a good idea to let users change button assignments.
+操纵杆按钮的状态作为布尔值列表包含在 `buttons` 属性中。 
+如果值为 True，则表示正在按下相应的按钮。 
+虽然按钮在物理操纵杆上可能标记为 A、B、X 或 Y，但在访问 `buttons` 列表时，它们只是由其索引引用。
+如果不测试特定的游戏杆，就无法轻松知道哪个按钮索引对应于设备上的哪个物理按钮，因此最好让用户更改按钮分配。
 
-Each open joystick dispatches events when the joystick changes state.
-For buttons, there is the :py:meth:`~pyglet.input.Joystick.on_joybutton_press`
-event which is sent whenever any of the joystick's buttons are pressed::
+每个打开的操纵杆在游戏杆更改状态时调度事件。
+对于按钮，每当按下操纵杆的任何按钮时发送的事件 :py:meth:`~pyglet.input.Joystick.on_joybutton_press`::
 
     def on_joybutton_press(joystick, button):
         pass
 
-and the :py:meth:`~pyglet.input.Joystick.on_joybutton_release` event which is
-sent whenever any of the joystick's buttons are released::
+以及每当释放操纵杆的任何按钮时都会发送事件 :py:meth:`~pyglet.input.Joystick.on_joybutton_release`::
 
     def on_joybutton_release(joystick, button):
         pass
 
-The :py:class:`~pyglet.input.Joystick` parameter is the
-:py:class:`~pyglet.input.Joystick` instance whose buttons changed state
-(useful if you have multiple joysticks connected).
-The `button` parameter signifies which button changed and is simply an
-integer value, the index of the corresponding button in the `buttons`
-list.
+:py:class:`~pyglet.input.Joystick` 参数是 :py:class:`~pyglet.input.Joystick` 实例，其按钮状态已更改（如果连接了多个操纵杆，则很有用）。
+`button` 参数表示哪个按钮发生了变化，只是一个整数值，即 `button` 列表中相应按钮的索引。
 
-For most games, it is probably best to examine the current position of
-the joystick directly by using the `x` and `y` attributes.  However if
-you want to receive notifications whenever these values change you
-should handle the :py:meth:`~pyglet.input.Joystick.on_joyaxis_motion` event::
+对于大多数游戏，最好使用 `x` 和 `y` 属性直接检查操纵杆的当前位置。 
+但是，如果您希望在这些值更改时收到通知，则应处理 :py:meth:`~pyglet.input.Joystick.on_joyaxis_motion`事件::
 
     def on_joyaxis_motion(joystick, axis, value):
         pass
 
-The :py:class:`~pyglet.input.Joystick` parameter again tells you which
-joystick device changed.  The `axis` parameter is string such as
-"x", "y", or "rx" telling you which axis changed value.  And `value`
-gives the current normalized value of the axis, ranging between -1 and 1.
+:py:class:`~pyglet.input.Joystick` 参数再次告诉您哪个操纵杆设备发生了变化。 
+`axis` 参数是字符串，例如 `x` 、 `y` 或 `rx` ，告诉您哪个轴更改了值。 
+`value`给出了轴的当前归一化值，范围在 -1 到 1 之间。
 
-If the joystick has a hat switch, you may examine its current value by
-looking at the `hat_x` and `hat_y` attributes.  For both, the values
-are either -1, 0, or 1.  Note that `hat_y` will output 1 in the up
-position and -1 in the down position, which is the opposite of the
-y-axis control.
+如果操纵杆有帽子开关，您可以通过查看 `hat_x` 和 `hat_y` 属性来检查其当前值。 
+对于两者，值为 -1、0 或 1。 请注意， `hat_y` 将在向上位置输出 1，在向下位置输出 -1，这与 y 轴控件相反。
 
-To be notified when the hat switch changes value, handle the
-:py:meth:`~pyglet.input.Joystick.on_joyhat_motion` event::
+要在帽子开关更改值时收到通知，请处理 :py:meth:`~pyglet.input.Joystick.on_joyhat_motion` 事件::
 
     def on_joyhat_motion(joystick, hat_x, hat_y):
         pass
 
-The `hat_x` and `hat_y` parameters give the same values as the
-joystick's `hat_x` and `hat_y` attributes.
+`hat_x` 和 `hat_y` 参数提供的值与操纵杆的 `hat_x` 和 `hat_y` 属性相同。
 
-A good way to use the joystick event handlers might be to define them
-within a controller class and then call::
+使用操纵杆事件处理程序的一个好方法是在控制器类中定义它们，然后调用::
 
     joystick.push_handlers(my_controller)
 
-Please note that you need a running application event loop for the joystick
-button an axis values to be properly updated. See the
-:ref:`programming-guide-eventloop` section for more details on how to start
-an event loop.
+请注意，您需要一个正在运行的应用程序事件循环，以便正确更新操纵杆按钮和轴值。
+请参阅 :ref:`programming-guide-eventloop` 部分，了解有关如何启动事件循环的更多详细信息。
 
 
 Using the Apple Remote
